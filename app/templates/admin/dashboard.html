@@ -1,0 +1,62 @@
+{% extends "admin/layout.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .chart-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+<div class="chart-container">
+    <div>
+        <h4>Average Scores</h4>
+        <canvas id="averageScoresChart"></canvas>
+    </div>
+    <div>
+        <h4>Completion Rates</h4>
+        <canvas id="completionRatesChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('averageScoresChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ quiz_names|tojson }},
+            datasets: [{
+                label: 'Average Score',
+                data: {{ average_scores|tojson }},
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    const ctx1 = document.getElementById('completionRatesChart')
+
+    new Chart(ctx1, {
+        type: 'pie',
+        data: {
+            labels: {{ quiz_names|tojson }},
+            datasets: [{
+                label: 'Completion Rate',
+                data: {{ completion_rates|tojson }},
+                hoverOffset: 4
+            }]
+        }
+    })
+</script>
+{% endblock %}

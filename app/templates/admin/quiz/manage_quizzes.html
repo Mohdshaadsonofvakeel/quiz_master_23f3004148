@@ -1,0 +1,41 @@
+{% extends "admin/layout.html" %}
+{% block title %}Manage Quizzes{% endblock %}
+{% block content %}
+<style>
+    th:nth-last-child(1) {
+        width: 30%;
+    }
+</style>
+<h2>Manage Quizzes</h2>
+<a href="{{ url_for('admin.add_quiz') }}">Add Quiz</a>
+<table>
+    <thead>
+        <tr>
+
+            <th>Id</th>
+            <th>Name</th>
+            <th>Date of Quiz</th>
+            <th>Time Duration</th>
+            <th colspan="3">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for quiz in quizzes %}
+        <tr>
+            <td>{{ quiz.id }}</td>
+            <td>{{ quiz.name }}</td>
+            <td>{{ quiz.date_of_quiz }}</td>
+            <td>{{ quiz.time_duration }}</td>
+            <td><a href="{{ url_for('admin.edit_quiz', id=quiz.id) }}">Edit</a></td>
+            <td>
+                <form action="{{ url_for('admin.delete_quiz', id=quiz.id) }}" method="post">
+                    <button onclick="return confirm('Are you sure, you want to delete this quiz?')">Delete</button>
+                </form>
+
+            </td>
+            <td><a href="{{ url_for('admin.manage_quiz_questions', quiz_id=quiz.id) }}">Manage Quiz Questions</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
