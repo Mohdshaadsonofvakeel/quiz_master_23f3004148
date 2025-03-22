@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block head %}
+  {{ super() }}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Modernized Dashboard Styles */
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00f2fe;
+      text-shadow: 0 0 15px #00f2fe;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #e0e0e0;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 25px #00f2fe;
+    }
+    .card-body h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #00f2fe;
+      text-shadow: 0 0 10px #00f2fe;
+    }
+    canvas {
+      background: transparent;
+    }
+    /* Chart Tooltip Customization */
+    .chartjs-tooltip {
+      background-color: #1e1e1e !important;
+      border-radius: 5px;
+      padding: 8px;
+      color: #e0e0e0 !important;
+    }
+  </style>
+{% endblock %}
+{% block content %}
+<h1 class="page-title">Admin Dashboard</h1>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h3>Average Scores</h3>
+        <canvas id="averageScoresChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h3>Completion Rates</h3>
+        <canvas id="completionRatesChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Average Scores Chart
+  const averageCtx = document.getElementById('averageScoresChart');
+  new Chart(averageCtx, {
+      type: 'bar',
+      data: {
+          labels: {{ quiz_names|tojson }},
+          datasets: [{
+              label: 'Average Score',
+              data: {{ average_scores|tojson }},
+              backgroundColor: 'rgba(67, 97, 238, 0.6)',
+              borderColor: 'rgba(67, 97, 238, 1)',
+              borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              y: { beginAtZero: true }
+          },
+          plugins: {
+              tooltip: {
+                  backgroundColor: '#1e1e1e',
+                  titleColor: '#00f2fe',
+                  bodyColor: '#e0e0e0'
+              }
+          }
+      }
+  });
+
+  // Completion Rates Chart
+  const completionCtx = document.getElementById('completionRatesChart');
+  new Chart(completionCtx, {
+      type: 'pie',
+      data: {
+          labels: {{ quiz_names|tojson }},
+          datasets: [{
+              label: 'Completion Rate',
+              data: {{ completion_rates|tojson }},
+              backgroundColor: [
+                  'rgba(67, 97, 238, 0.6)',
+                  'rgba(249, 115, 22, 0.6)',
+                  'rgba(16, 185, 129, 0.6)',
+                  'rgba(239, 68, 68, 0.6)',
+                  'rgba(251, 191, 36, 0.6)'
+              ],
+              hoverOffset: 4
+          }]
+      },
+      options: {
+          plugins: {
+              tooltip: {
+                  backgroundColor: '#1e1e1e',
+                  titleColor: '#00f2fe',
+                  bodyColor: '#e0e0e0'
+              }
+          }
+      }
+  });
+</script>
+{% endblock %}

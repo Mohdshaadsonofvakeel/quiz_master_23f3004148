@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 2rem;
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        max-width: 700px;
+        width: 100%;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        color: #e0e0e0;
+        transition: transform 0.3s ease;
+    }
+
+    .auth-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 0 25px #00f2fe;
+    }
+
+    .auth-header h1 {
+        font-size: 2.5rem;
+        color: #00f2fe;
+        text-shadow: 0 0 20px #00f2fe;
+    }
+
+    .auth-header p {
+        color: #ccc;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        color: #00f2fe;
+        font-weight: 600;
+    }
+
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        border: 1px solid #00f2fe;
+        border-radius: 10px;
+        padding: 0.75rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-control::placeholder {
+        color: #aaa;
+    }
+
+    .form-control:focus {
+        border-color: #00f2fe;
+        box-shadow: 0 0 10px #00f2fe;
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        flex: 1 1 45%;
+    }
+
+    .btn-glow {
+        background-color: #00f2fe;
+        color: #111;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px #00f2fe;
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-5px);
+        background-color: #00d4e4;
+        box-shadow: 0 0 25px #00f2fe;
+    }
+
+    .auth-footer p {
+        margin-top: 2rem;
+        text-align: center;
+        color: #ccc;
+    }
+
+    .auth-footer a {
+        color: #00f2fe;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    /* Autofill Fix */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset;
+        -webkit-text-fill-color: #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+        }
+
+        .form-group {
+            flex: 1 1 100%;
+        }
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header text-center">
+            <h1 class="glow-text">Create Account</h1>
+            <p>Join Quiz Master and start your journey of knowledge and fun!</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.username.label(class_="form-label") }}
+                    {{ form.username(size=32, class_="form-control", placeholder="Email address") }}
+                    {% if form.username.errors %}
+                    <ul class="errors text-danger mt-2">
+                        {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.fullname.label(class_="form-label") }}
+                    {{ form.fullname(class_="form-control", placeholder="Your full name") }}
+                    {% if form.fullname.errors %}
+                    <ul class="errors text-danger mt-2">
+                        {% for error in form.fullname.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.password.label(class_="form-label") }}
+                    {{ form.password(size=32, class_="form-control", placeholder="Create password") }}
+                    {% if form.password.errors %}
+                    <ul class="errors text-danger mt-2">
+                        {% for error in form.password.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.confirm_password.label(class_="form-label") }}
+                    {{ form.confirm_password(size=32, class_="form-control", placeholder="Confirm password") }}
+                    {% if form.confirm_password.errors %}
+                    <ul class="errors text-danger mt-2">
+                        {% for error in form.confirm_password.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    {{ form.qualification.label(class_="form-label") }}
+                    {{ form.qualification(class_="form-control", placeholder="Your highest qualification") }}
+                    {% if form.qualification.errors %}
+                    <ul class="errors text-danger mt-2">
+                        {% for error in form.qualification.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.dob.label(class_="form-label") }}
+                    {{ form.dob(class_="form-control", placeholder="YYYY-MM-DD") }}
+                    {% if form.dob.errors %}
+                    <ul class="errors text-danger mt-2">
+                        {% for error in form.dob.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-actions text-center">
+                {{ form.submit(class_="btn btn-glow", value="Sign Up") }}
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('auth.login') }}" class="animated-link">Sign In</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

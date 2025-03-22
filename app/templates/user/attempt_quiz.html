@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block title %}Attempt Quiz: {{quiz.name}}{% endblock %}
+{% block content %}
+<h1 class="page-title">{{quiz.name}}</h1>
+
+{% if quiz.time_duration > 0 %}
+<span id="timer" class="quiz-timer">00:00</span>
+{% endif %}
+
+<form id="quizForm" class="quiz-form" method="POST">
+    {% for question in questions %}
+    <div class="quiz-question">
+        <div class="question-number">Question #{{ loop.index }}</div>
+        <div class="question-statement">{{ question.question_statement }}</div>
+        <div class="quiz-options">
+            {% for option in [question.option1, question.option2, question.option3, question.option4] %}
+            <label class="radio-option">
+                <input type="radio" name="question_{{ question.id }}" value="{{ loop.index }}" required>
+                {{ option }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary btn-block">Submit Quiz</button>
+</form>
+
+
+<script>
+    const quizDuration = {{ quiz.time_duration }};
+    if (quizDuration > 0) {
+        let timeLeft = quizDuration;
+
+        function updateTimer() {
+            let minutes = Math.floor(timeLeft / 60)
+            let seconds = timeLeft % 60
+            document.getElementById("timer").textContent = `
+    ${minutes.toString().padStart(2, '0')}:
+    ${seconds.toString().padStart(2, '0')}
+    `
+            if (timeLeft <= 0) {
+                clearInterval(timeInterval);
+                alert("Time's up! Your quiz will be submitted automatically.");
+                document.getElementById("quizForm").submit()
+            } else {
+                timeLeft--;
+            }
+        }
+
+        const timeInterval = setInterval(updateTimer, 1000)
+    }
+</script>
+{% endblock %}

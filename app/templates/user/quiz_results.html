@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Quiz Results{% endblock %}
+{% block content %}
+<h1 class="page-title">Quiz Results</h1>
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="detail-item">
+            <span class="detail-key">Quiz Name:</span>
+            <span class="detail-value">{{ quiz.name }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-key">Your Score:</span>
+            <span class="detail-value">{{ score.total_scored }} / {{ quiz.questions|length }}</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

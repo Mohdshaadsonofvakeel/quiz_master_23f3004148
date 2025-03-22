@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<style>
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid #00f2fe;
+        color: #e0e0e0 !important;  /* Enforce text color */
+        padding: 0.8rem;
+        border-radius: 8px;
+        transition: border 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #00f2fe;
+        box-shadow: 0 0 10px #00f2fe;
+        color: #e0e0e0 !important;  /* Ensure color on focus */
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    /* Autofill fix for Chrome */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
+        -webkit-text-fill-color: #e0e0e0 !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .auth-card, .auth-card * {
+        color: #e0e0e0 !important;
+    }
+    
+    .form-control {
+        color: #e0e0e0 !important;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-control::placeholder {
+        color: #cccccc;
+        opacity: 0.7;
+    }
+    
+    .form-label {
+        color: #00f2fe;
+    }
+    
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset;
+        -webkit-text-fill-color: #e0e0e0 !important;
+    }
+    
+    .auth-container {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-radius: 1rem;
+        padding: 3rem;
+        width: 100%;
+        max-width: 450px;
+        color: #fff;
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+        animation: fadeInUp 1s ease forwards;
+    }
+
+    .auth-header h1 {
+        font-size: 2.5rem;
+        color: #00f2fe;
+        text-shadow: 0 0 15px #00f2fe;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: #ccc;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid #00f2fe;
+        color: #fff;
+        padding: 0.8rem;
+        border-radius: 8px;
+        transition: border 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #00f2fe;
+        box-shadow: 0 0 10px #00f2fe;
+    }
+
+    .btn-glow {
+        background-color: #00f2fe;
+        color: #111;
+        font-weight: bold;
+        padding: 0.8rem 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 15px #00f2fe;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-glow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px #00f2fe;
+    }
+
+    .animated-link {
+        color: #00f2fe;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .animated-link:hover {
+        color: #00c2e2;
+        text-decoration: underline;
+    }
+
+    .password-toggle {
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #00f2fe;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue your journey with <b>Quiz Master</b></p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label(class_="form-label") }}
+                <div class="input-wrapper">
+                    {{ form.username(size=32, class_="form-control", placeholder="Enter your email") }}
+                </div>
+                {% if form.username.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.password.label(class_="form-label") }}
+                <div class="input-wrapper">
+                    {{ form.password(class_="form-control", placeholder="Enter your password") }}
+                    <span class="password-toggle" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+                {% if form.password.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.password.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions text-center">
+                {{ form.submit(class_="btn btn-glow btn-animated", value="Sign In") }}
+            </div>
+        </form>
+        
+        <div class="auth-footer mt-4 text-center">
+            <p>New here? <a href="{{ url_for('auth.register') }}" class="animated-link">Join Quiz Master</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordField = document.querySelector('input[type="password"]');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    });
+</script>
+
+{% endblock %}

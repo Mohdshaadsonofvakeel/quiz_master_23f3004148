@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Add Subject{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4" style="border-radius: 15px; background: #f8f9fa;">
+        <h2 class="text-center text-primary mb-4">✨ Add New Subject ✨</h2>
+
+        <form method="post">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group mb-4">
+                {{ form.name.label(class_="form-label fw-semibold") }}
+                {{ form.name(class_="form-control rounded-pill shadow-sm", placeholder="Enter Subject Name...") }}
+                {% if form.name.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.name.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group mb-4">
+                {{ form.description.label(class_="form-label fw-semibold") }}
+                {{ form.description(class_="form-control rounded-pill shadow-sm", placeholder="Short Description...") }}
+                {% if form.description.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.description.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+                {{ form.submit(class_="btn btn-success w-50 rounded-pill shadow-sm") }}
+                <a href="{{ url_for('admin.manage_subjects') }}" class="btn btn-danger w-50 rounded-pill shadow-sm">
+                    ❌ Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Optional: Extra Styling -->
+<style>
+    .btn-success:hover {
+        background-color: #28a745;
+        box-shadow: 0 0 15px #28a745;
+    }
+
+    .btn-danger:hover {
+        background-color: #dc3545;
+        box-shadow: 0 0 15px #dc3545;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 10px #007bff;
+    }
+</style>
+
+{% endblock %}
