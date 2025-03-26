@@ -5,18 +5,20 @@ from flask_login import login_user, login_required, logout_user
 import os
 from app.models.user import User
 
-auth_bp = Blueprint('auth', __name__)
 
+auth_bp = Blueprint('auth', __name__)
 @auth_bp.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
         user = User(
-                    username=form.username.data,
-                    fullname=form.fullname.data,
-                    qualification=form.qualification.data,
-                    dob=form.dob.data
-                )
+    username=form.username.data,
+    email=form.username.data,  # ✅ FILL this too
+    fullname=form.fullname.data,
+    qualification=form.qualification.data,
+    dob=form.dob.data
+)
+
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -24,11 +26,14 @@ def register():
         return redirect(url_for('auth.login'))
     return render_template("register.html", form=form)
 
+
+
 @auth_bp.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
+
         if user and user.check_password(form.password.data):
             login_user(user)
             if user.is_admin:

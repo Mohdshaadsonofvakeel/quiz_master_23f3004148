@@ -11,10 +11,14 @@ class RegisterForm(FlaskForm):
     dob = DateField('Date of Birth', format="%Y-%m-%d", validators=[DataRequired()])
     submit = SubmitField('Submit')
 
+
+
+
 class LoginForm(FlaskForm):
     username = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
     submit = SubmitField('Submit')
+
 
 class SubjectForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])

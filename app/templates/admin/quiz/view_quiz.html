@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Quiz Details{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="page-title">Quiz Details</h1>
+    <a href="{{ url_for('admin.manage_quizzes') }}" class="btn btn-secondary">Back</a>
+</div>
+
+<!-- ✅ Quiz Info Card -->
+<div class="card shadow border border-primary mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">{{ quiz.name }} 
+            <span class="badge bg-warning text-dark">Quiz ID {{ quiz.id }}</span>
+        </h4>
+    </div>
+    <div class="card-body">
+        <p><strong>Subject:</strong> {{ quiz.chapter.subject.name }}</p>
+        <p><strong>Chapter:</strong> {{ quiz.chapter.name }}</p>
+        <p><strong>Total Questions:</strong> {{ quiz.questions|length }}</p>
+        <p><strong>Description:</strong> {{ quiz.description or "No description provided." }}</p>
+    </div>
+</div>
+
+<!-- ✅ Subject and Chapter Summary Card -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow border border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Subject: {{ quiz.chapter.subject.name }}</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ quiz.chapter.subject.description or "No description available." }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow border border-primary">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Chapter: {{ quiz.chapter.name }}</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ quiz.chapter.description or "No description available." }}</p>
+                <p><strong>Quizzes in this Chapter:</strong> {{ quiz.chapter.quizzes|length }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Styling -->
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
+        transition: 0.3s;
+    }
+</style>
+
+{% endblock %}

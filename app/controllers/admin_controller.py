@@ -28,10 +28,28 @@ def admin_login_required(func):
         return func(*args, **kwargs)
         
     return decorated_view
-
 @admin_bp.route("/admin/dashboard")
 @admin_login_required
 def admin_dashboard():
+    total_users = User.query.count()
+    total_subjects = Subject.query.count()
+    total_questions = Question.query.count()
+
+    subjects = Subject.query.all()
+    subject_names = [subject.name for subject in subjects]
+    subject_top_scores = []
+    subject_attempts = []
+
+    for subject in subjects:
+        chapter_ids = [ch.id for ch in subject.chapters]
+        quizzes = Quiz.query.filter(Quiz.chapter_id.in_(chapter_ids)).all()
+        quiz_ids = [q.id for q in quizzes]
+
+        scores = Score.query.filter(Score.quiz_id.in_(quiz_ids)).all() if quiz_ids else []
+        top_score = max([s.total_scored for s in scores], default=0)
+        subject_top_scores.append(top_score)
+        subject_attempts.append(len(scores))
+
     quizzes = Quiz.query.all()
     quiz_names = [quiz.name for quiz in quizzes]
     average_scores = []
@@ -40,19 +58,41 @@ def admin_dashboard():
     for quiz in quizzes:
         scores = Score.query.filter_by(quiz_id=quiz.id).all()
         if scores:
-            average_score = sum([s.total_scored for s in scores]) / len(scores)
-
-            users_attempted = len(scores)
-            completion_rate = (users_attempted / (User.query.count() - 1)) * 100
+            avg = sum([s.total_scored for s in scores]) / len(scores)
+            average_scores.append(avg)
+            completion_rates.append((len(scores) / (User.query.count() - 1)) * 100)
         else:
-           average_score = 0 
-           completion_rate = 0
-        average_scores.append(average_score)
-        completion_rates.append(completion_rate)
+            average_scores.append(0)
+            completion_rates.append(0)
+
+    recent_attempts = Score.query.order_by(Score.timestamp.desc()).limit(5).all()
+    recent_attempts_data = [{
+        "user": User.query.get(s.user_id).fullname,
+        "quiz": Quiz.query.get(s.quiz_id).name,
+        "score": s.total_scored,
+        "date": s.timestamp.strftime('%Y-%m-%d')
+    } for s in recent_attempts]
+
+    recent_users = User.query.filter(User.is_admin == False).order_by(User.id.desc()).limit(5).all()
+    recent_users_data = [{
+        "name": u.fullname,
+        "email": u.email if hasattr(u, 'email') else u.username,
+        "qualification": u.qualification
+    } for u in recent_users]
+
     return render_template("admin/dashboard.html",
+                           total_users=total_users,
+                           total_subjects=total_subjects,
+                           total_questions=total_questions,
+                           subject_names=subject_names,
+                           subject_top_scores=subject_top_scores,
+                           subject_attempts=subject_attempts,
                            quiz_names=quiz_names,
                            average_scores=average_scores,
-                           completion_rates=completion_rates)
+                           completion_rates=completion_rates,
+                           recent_attempts=recent_attempts_data,
+                           recent_users=recent_users_data)
+
 
 @admin_bp.route("/admin/manage_subjects")
 @admin_login_required
@@ -227,3 +267,14 @@ def add_question(quiz_id):
 
     # ✅ Pass the quiz object to the template
     return render_template("admin/question/add_question.html", form=form, quiz=quiz)
+@admin_bp.route('/quiz/<int:quiz_id>')
+@admin_login_required
+def view_quiz(quiz_id):
+    quiz = Quiz.query.get_or_404(quiz_id)
+    return render_template('admin/quiz/view_quiz.html', quiz=quiz)
+@admin_bp.route('/manage/quiz-question')
+@admin_login_required
+def manage_quiz_question():
+    quizzes = Quiz.query.options(joinedload(Quiz.chapter).joinedload(Chapter.subject),
+                                 joinedload(Quiz.questions)).all()
+    return render_template('admin/quiz/manage_quiz_question.html', quizzes=quizzes)

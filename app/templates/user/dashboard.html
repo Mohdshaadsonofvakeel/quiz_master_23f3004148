@@ -1,82 +1,214 @@
 {% extends "layout.html" %}
 {% block title %}User Dashboard{% endblock %}
 {% block content %}
-<h1 class="page-title">User Dashboard</h1>
 
-<section class="mb-6">
-    <div class="row gap-6">
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="mb-3">Your Details</h3>
-                    <div class="detail-item">
-                        <span class="detail-key">Username:</span>
-                        <span class="detail-value">{{ current_user.username }}</span>
-                    </div>
+<style>
+    body, .modern-bg {
+        background-color: #121212 !important;
+        color: #e0e0e0;
+    }
 
-                    <div class="detail-item">
-                        <span class="detail-key">Full Name:</span>
-                        <span class="detail-value">{{ current_user.fullname }}</span>
-                    </div>
+    .page-title {
+        font-size: 2.4rem;
+        color: #00bfff;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: 700;
+    }
 
-                    <div class="detail-item">
-                        <span class="detail-key">Qualification:</span>
-                        <span class="detail-value">{{ current_user.qualification }}</span>
-                    </div>
+    .user-card, .table-container {
+        background-color: #1e1e1e;
+        border-radius: 15px;
+        padding: 1.8rem;
+        box-shadow: 0 0 25px rgba(0, 191, 255, 0.1);
+        margin-bottom: 2.5rem;
+        transition: 0.3s ease;
+    }
 
-                    <div class="detail-item">
-                        <span class="detail-key">DOB:</span>
-                        <span class="detail-value">{{ current_user.dob }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="mb-3">Progress Summary</h3>
-                    <div class="detail-item">
-                        <span class="detail-key">Total Attempted Quizzes:</span>
-                        <span class="detail-value">{{ total_attempted_quizzes }}</span>
-                    </div>
+    .user-card:hover, .table-container:hover {
+        box-shadow: 0 0 35px rgba(0, 191, 255, 0.2);
+    }
 
-                    <div class="detail-item">
-                        <span class="detail-key">Average Score:</span>
-                        <span class="detail-value">{{ average_score|round(2) }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    .user-info {
+        font-size: 1.1rem;
+        margin-bottom: 1.2rem;
+    }
 
-<section class="mb-6">
-    <div class="card">
-        <div class="card-body">
-            <h3 class="mb-3">Quiz History</h3>
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Quiz Name</th>
-                            <th>Attempted Time</th>
-                            <th>Total Scored</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for score in scores %}
-                        <tr>
-                            <td>{{ score.quiz.name }}</td>
-                            <td>{{ score.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
-                            <td>{{ score.total_scored }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    .user-info span {
+        color: #00bfff;
+        font-weight: 600;
+        margin-right: 10px;
+    }
 
-</section>
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        color: #e0e0e0;
+    }
+
+    .modern-table thead {
+        background-color: #00bfff;
+        color: #121212;
+    }
+
+    .modern-table th, .modern-table td {
+        padding: 1rem;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .modern-table tbody tr {
+        background-color: #1e1e1e;
+        transition: background-color 0.3s;
+    }
+
+    .modern-table tbody tr:hover {
+        background-color: #252525;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        background-color: #00bfff;
+        color: #121212;
+        font-weight: 600;
+        transition: 0.3s;
+        text-decoration: none;
+        margin: 0 5px;
+    }
+
+    .btn-action:hover {
+        background-color: #008ecc;
+        color: #fff;
+    }
+
+    .badge {
+        padding: 6px 16px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .badge-success { background-color: #2ecc71; color: #fff; }
+    .badge-upcoming { background-color: #3498db; color: #fff; }
+    .badge-danger { background-color: #e74c3c; color: #fff; }
+
+    .section-title {
+        font-size: 1.7rem;
+        color: #00bfff;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #00bfff;
+        padding-bottom: 0.5rem;
+    }
+</style>
+
+<h1 class="page-title"><i class="fas fa-user-circle me-2"></i>User Dashboard</h1>
+
+<!-- User Details Card -->
+<div class="user-card">
+    <h2 class="section-title"><i class="fas fa-id-badge me-2"></i>Personal & Progress Details</h2>
+    <div class="user-info"><span><i class="fas fa-user"></i> Username:</span> {{ current_user.username }}</div>
+    <div class="user-info"><span><i class="fas fa-address-card"></i> Full Name:</span> {{ current_user.fullname }}</div>
+    <div class="user-info"><span><i class="fas fa-graduation-cap"></i> Qualification:</span> {{ current_user.qualification }}</div>
+    <div class="user-info"><span><i class="fas fa-calendar-alt"></i> DOB:</span> {{ current_user.dob }}</div>
+    <div class="user-info"><span><i class="fas fa-clipboard-list"></i> Total Quizzes Attempted:</span> {{ total_attempted_quizzes }}</div>
+    <div class="user-info"><span><i class="fas fa-chart-line"></i> Average Score:</span> {{ average_score|round(2) }}</div>
+</div>
+
+<!-- Upcoming Quizzes -->
+<div class="table-container">
+    <h2 class="section-title"><i class="fas fa-calendar-check me-2"></i>Upcoming Quizzes</h2>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Quiz ID</th>
+                <th>Chapter</th>
+                <th>Questions</th>
+                <th>Scheduled Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in quizzes %}
+            <tr>
+                <td>{{ quiz.id }}</td>
+                <td>{{ quiz.chapter.name }}</td>
+                <td>{{ quiz.questions|length }}</td>
+                <td>{{ quiz.date_of_quiz.strftime('%Y-%m-%d') if quiz.date_of_quiz else 'N/A' }}</td>
+                <td>
+                    <a href="{{ url_for('users.quiz_view', quiz_id=quiz.id) }}" class="btn-action">View</a>
+                    <a href="{{ url_for('users.attempt_quiz', quiz_id=quiz.id) }}" class="btn-action">Start</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No upcoming quizzes available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Quiz History -->
+<div class="table-container">
+    <h2 class="section-title"><i class="fas fa-history me-2"></i>Quiz History</h2>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Quiz Name</th>
+                <th>Attempted On</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for score in scores %}
+            <tr>
+                <td>{{ score.quiz.name }}</td>
+                <td>{{ score.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+                <td>{{ score.total_scored }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">No Quiz History Found</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Quiz Collection Status -->
+<div class="table-container">
+    <h2 class="section-title"><i class="fas fa-layer-group me-2"></i>Quiz Collection Status</h2>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Quiz Name</th>
+                <th>Scheduled Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quiz in all_quizzes %}
+            <tr>
+                <td>{{ quiz.name }}</td>
+                <td>{{ quiz.date_of_quiz.strftime('%Y-%m-%d') if quiz.date_of_quiz else 'N/A' }}</td>
+                <td>
+                    {% if quiz.id in attempted_quiz_ids %}
+                        <span class="badge badge-success">Attempted</span>
+                    {% elif quiz.date_of_quiz and quiz.date_of_quiz > now %}
+                        <span class="badge badge-upcoming">Upcoming</span>
+                    {% else %}
+                        <span class="badge badge-danger">Not Attempted</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('users.quiz_view', quiz_id=quiz.id) }}" class="btn-action">View</a>
+                    <a href="{{ url_for('users.attempt_quiz', quiz_id=quiz.id) }}" class="btn-action">Start</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3">No Quizzes Available</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

@@ -7,70 +7,11 @@
     {% block head %}
     <title>{% block title %}{% endblock %} - Quiz Master</title>
     {% endblock %}
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        body.modern-bg {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
-            min-height: 100vh;
-        }
-
-        .navbar {
-            background: rgba(15, 12, 41, 0.85);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            border-bottom: 1px solid #2c2c54;
-        }
-
-        .navbar-brand {
-            color: #00f2fe !important;
-            font-weight: 700;
-            transition: transform 0.3s ease;
-        }
-
-        .navbar-brand:hover {
-            transform: scale(1.1);
-        }
-
-        .nav-link {
-            color: #fff !important;
-            transition: color 0.3s, transform 0.3s;
-        }
-
-        .nav-link:hover {
-            color: #00f2fe !important;
-            transform: translateY(-2px);
-        }
-
-        .nav-link.active {
-            color: #00f2fe !important;
-            font-weight: bold;
-            text-shadow: 0 0 10px #00f2fe;
-        }
-
-        .alert {
-            animation: fadeIn 1s forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        main.container {
-            animation: slideUp 1s forwards;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
 
 <body class="modern-bg {% if current_user.is_authenticated %}user-logged-in{% endif %}">
@@ -80,7 +21,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('home') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" width="40">
-                Quiz<span class="text-accent">Master</span>
+                Quiz<span class="text-primary">Master</span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -91,14 +32,12 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if current_user.is_authenticated %}
                         {% if current_user.is_admin %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_subjects') }}"><i class="fas fa-book"></i> Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_chapters') }}"><i class="fas fa-bookmark"></i> Chapters</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_subjects') }}"><i class="fas fa-book"></i> Subjects</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_quizzes') }}"><i class="fas fa-question-circle"></i> Quizzes</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Summary</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_users') }}"><i class="fas fa-users"></i> Users</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                         {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.leaderboard') }}"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.leaderboard') }}"><i class="fas fa-chart-bar"></i> Leaderboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('users.select_quiz') }}"><i class="fas fa-play-circle"></i> Play Quiz</a></li>
                         {% endif %}
                     {% endif %}
@@ -106,7 +45,7 @@
 
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item"><span class="nav-link">Welcome, {{ current_user.fullname }}</span></li>
+                        <li class="nav-item"><span class="nav-link">Hi, {{ current_user.fullname }}</span></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
@@ -150,7 +89,7 @@
             });
         });
 
-        // Optional: Smooth Scroll Reveal (basic)
+        // Optional scroll reveal
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -161,6 +100,6 @@
 
         document.querySelectorAll('main > *').forEach(section => observer.observe(section));
     </script>
-</body>
 
+</body>
 </html>

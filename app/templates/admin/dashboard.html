@@ -1,130 +1,319 @@
 {% extends "layout.html" %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block head %}
-  {{ super() }}
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    /* Modernized Dashboard Styles */
-    .page-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #00f2fe;
-      text-shadow: 0 0 15px #00f2fe;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(15px);
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      color: #e0e0e0;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 25px #00f2fe;
-    }
-    .card-body h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: #00f2fe;
-      text-shadow: 0 0 10px #00f2fe;
-    }
-    canvas {
-      background: transparent;
-    }
-    /* Chart Tooltip Customization */
-    .chartjs-tooltip {
-      background-color: #1e1e1e !important;
-      border-radius: 5px;
-      padding: 8px;
-      color: #e0e0e0 !important;
-    }
-  </style>
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  /* Neo-Cyber Glassmorphism Dashboard Styling */
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #00f2fe;
+    text-shadow: 0 0 15px #00f2fe;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .card-stat {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+  }
+  .card-stat h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+  .card-stat p { color: #ccc; font-size: 1rem; }
+  
+  .card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #e0e0e0;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 25px #00f2fe;
+  }
+  .card h3 {
+    font-size: 1.5rem;
+    color: #00f2fe;
+    text-shadow: 0 0 10px #00f2fe;
+    margin-bottom: 1.5rem;
+  }
+  .table {
+    background: rgba(255,255,255,0.05);
+    color: #e0e0e0;
+    border-radius: 15px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1rem;
+  }
+  .table th, .table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .table th {
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    color: #111;
+  }
+  .table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  canvas { background: transparent; }
+</style>
 {% endblock %}
+
 {% block content %}
 <h1 class="page-title">Admin Dashboard</h1>
+<!-- Animated Background -->
+<div class="animated-bg"></div>
 
-<div class="row">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <h3>Average Scores</h3>
-        <canvas id="averageScoresChart" height="200"></canvas>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <h3>Completion Rates</h3>
-        <canvas id="completionRatesChart" height="200"></canvas>
-      </div>
-    </div>
-  </div>
+<!-- Animated Lines -->
+<div class="lines">
+  <div class="line"></div>
+  <div class="line"></div>
+  <div class="line"></div>
+  <div class="line"></div>
+  <div class="line"></div>
 </div>
 
-<script>
-  // Average Scores Chart
-  const averageCtx = document.getElementById('averageScoresChart');
-  new Chart(averageCtx, {
-      type: 'bar',
-      data: {
-          labels: {{ quiz_names|tojson }},
-          datasets: [{
-              label: 'Average Score',
-              data: {{ average_scores|tojson }},
-              backgroundColor: 'rgba(67, 97, 238, 0.6)',
-              borderColor: 'rgba(67, 97, 238, 1)',
-              borderWidth: 1
-          }]
-      },
-      options: {
-          scales: {
-              y: { beginAtZero: true }
-          },
-          plugins: {
-              tooltip: {
-                  backgroundColor: '#1e1e1e',
-                  titleColor: '#00f2fe',
-                  bodyColor: '#e0e0e0'
-              }
-          }
-      }
-  });
+<!-- Stats Section -->
+<!-- Add Font Awesome for Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-  // Completion Rates Chart
-  const completionCtx = document.getElementById('completionRatesChart');
-  new Chart(completionCtx, {
-      type: 'pie',
-      data: {
-          labels: {{ quiz_names|tojson }},
-          datasets: [{
-              label: 'Completion Rate',
-              data: {{ completion_rates|tojson }},
-              backgroundColor: [
-                  'rgba(67, 97, 238, 0.6)',
-                  'rgba(249, 115, 22, 0.6)',
-                  'rgba(16, 185, 129, 0.6)',
-                  'rgba(239, 68, 68, 0.6)',
-                  'rgba(251, 191, 36, 0.6)'
-              ],
-              hoverOffset: 4
-          }]
-      },
-      options: {
-          plugins: {
-              tooltip: {
-                  backgroundColor: '#1e1e1e',
-                  titleColor: '#00f2fe',
-                  bodyColor: '#e0e0e0'
-              }
-          }
-      }
-  });
+<!-- Updated Stats Section -->
+<div class="container">
+    <h2 class="text-center mb-4">Dashboard Statistics</h2>
+    <div class="row g-4">
+
+        <!-- Total Users Card -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card stats-card card-hover-success shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted text-uppercase fw-bold small">Total Users</div>
+                            <div class="stat-value text-success">{{ total_users }}</div>
+                            <div class="stat-change text-success">
+                            </div>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fas fa-users text-success"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mini-chart">
+                        <div class="chart-bar" style="height: 50%"></div>
+                        <div class="chart-bar" style="height: 70%"></div>
+                        <div class="chart-bar" style="height: 85%"></div>
+                        <div class="chart-bar" style="height: 75%"></div>
+                        <div class="chart-bar" style="height: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Subjects Card -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card stats-card card-hover-primary shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted text-uppercase fw-bold small">Total Subjects</div>
+                            <div class="stat-value text-primary">{{ total_subjects }}</div>
+                            <div class="stat-change text-success">
+                                
+                               
+                            </div>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fas fa-book-open text-primary"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mini-chart">
+                        <div class="chart-bar" style="height: 60%"></div>
+                        <div class="chart-bar" style="height: 40%"></div>
+                        <div class="chart-bar" style="height: 80%"></div>
+                        <div class="chart-bar" style="height: 65%"></div>
+                        <div class="chart-bar" style="height: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Questions Card -->
+        <div class="col-xl-4 col-md-6">
+            <div class="card stats-card card-hover-info shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted text-uppercase fw-bold small">Total Questions</div>
+                            <div class="stat-value text-info">{{ total_questions }}</div>
+                            <div class="stat-change text-danger">
+                                
+                            </div>
+                        </div>
+                        <div class="icon-circle">
+                            <i class="fas fa-question-circle text-info"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mini-chart">
+                        <div class="chart-bar" style="height: 80%"></div>
+                        <div class="chart-bar" style="height: 65%"></div>
+                        <div class="chart-bar" style="height: 55%"></div>
+                        <div class="chart-bar" style="height: 65%"></div>
+                        <div class="chart-bar" style="height: 65%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Subject-wise Top Scores Chart -->
+<div class="card">
+  <h3>Subject-wise Top Scores</h3>
+  <canvas id="subjectTopScores" width="900" height="400"></canvas>
+</div>
+
+<!-- Subject-wise User Attempts Chart -->
+<div class="card">
+  <h3>Subject-wise User Attempts</h3>
+  <canvas id="subjectAttempts" width="900" height="400"></canvas>
+</div>
+
+<!-- Average Scores Chart -->
+<div class="card">
+  <h3>Average Scores</h3>
+  <canvas id="averageScoresChart" width="900" height="400"></canvas>
+</div>
+
+<!-- Completion Rates Chart -->
+<div class="card">
+  <h3>Completion Rates</h3>
+  <canvas id="completionRatesChart" width="900" height="400"></canvas>
+</div>
+
+<!-- Recent Quiz Attempts Table -->
+<div class="card">
+  <h3>Recent Quiz Attempts</h3>
+  <table class="table">
+    <thead><tr><th>User</th><th>Quiz</th><th>Score</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for attempt in recent_attempts %}
+      <tr><td>{{ attempt.user }}</td><td>{{ attempt.quiz }}</td><td>{{ attempt.score }}</td><td>{{ attempt.date }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Recent Users Table -->
+<div class="card">
+  <h3>Recent Users</h3>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Email</th><th>Qualification</th></tr></thead>
+    <tbody>
+      {% for user in recent_users %}
+      <tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.qualification }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Chart Scripts -->
+<script>
+const defaultOptions = (titleText) => ({
+  responsive: true,
+  plugins: {
+    title: {
+      display: true,
+      text: titleText,
+      color: '#00f2fe',
+      font: { size: 22 }
+    },
+    legend: {
+      labels: { color: '#e0e0e0', font: { size: 16 } }
+    }
+  },
+  scales: {
+    y: { 
+      beginAtZero: true,
+      ticks: { color: '#e0e0e0', font: { size: 14 } }
+    },
+    x: {
+      ticks: { color: '#e0e0e0', font: { size: 14 } }
+    }
+  }
+});
+
+new Chart(document.getElementById('subjectTopScores'), {
+  type: 'bar',
+  data: {
+    labels: {{ subject_names|tojson }},
+    datasets: [{
+      label: 'Top Scores',
+      data: {{ subject_top_scores|tojson }},
+      backgroundColor: 'rgba(67, 97, 238, 0.6)'
+    }]
+  },
+  options: defaultOptions('Subject Top Scores')
+});
+
+new Chart(document.getElementById('subjectAttempts'), {
+  type: 'line',
+  data: {
+    labels: {{ subject_names|tojson }},
+    datasets: [{
+      label: 'User Attempts',
+      data: {{ subject_attempts|tojson }},
+      backgroundColor: 'rgba(16, 185, 129, 0.3)',
+      borderColor: 'rgba(16, 185, 129, 1)',
+      fill: true
+    }]
+  },
+  options: defaultOptions('Subject User Attempts')
+});
+
+new Chart(document.getElementById('averageScoresChart'), {
+  type: 'bar',
+  data: {
+    labels: {{ quiz_names|tojson }},
+    datasets: [{
+      label: 'Average Score',
+      data: {{ average_scores|tojson }},
+      backgroundColor: 'rgba(67, 97, 238, 0.6)'
+    }]
+  },
+  options: defaultOptions('Average Quiz Scores')
+});
+
+new Chart(document.getElementById('completionRatesChart'), {
+  type: 'pie',
+  data: {
+    labels: {{ quiz_names|tojson }},
+    datasets: [{
+      label: 'Completion Rate',
+      data: {{ completion_rates|tojson }},
+      backgroundColor: [
+        'rgba(67, 97, 238, 0.6)',
+        'rgba(249, 115, 22, 0.6)',
+        'rgba(16, 185, 129, 0.6)',
+        'rgba(239, 68, 68, 0.6)',
+        'rgba(251, 191, 36, 0.6)'
+      ],
+      hoverOffset: 4
+    }]
+  },
+  options: defaultOptions('Quiz Completion Rates')
+});
 </script>
 {% endblock %}

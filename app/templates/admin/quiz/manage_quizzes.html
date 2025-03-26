@@ -2,75 +2,74 @@
 {% block title %}Manage Quizzes{% endblock %}
 {% block content %}
 
-<h1 class="page-title d-flex justify-content-between align-items-center">
-    Manage Quizzes
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="page-title">Manage Quizzes</h1>
     <input type="text" id="searchInput" 
-           class="form-control form-control-sm rounded-pill shadow-sm w-auto" 
+           class="form-control form-control-sm rounded-pill shadow-sm" 
            placeholder="🔎 Search Quiz Title..." 
            onkeyup="filterQuizzes()" 
            style="width: 250px;">
-</h1>
+</div>
 
 <!-- ✅ Floating Add Quiz Button -->
 <a href="{{ url_for('admin.add_quiz') }}" 
    class="btn btn-primary rounded-circle shadow-lg" 
    style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
           font-size: 28px; text-align: center; padding: 0; z-index: 9999;"
-   title="Add New Quiz">
-   +
-</a>
+   title="Add New Quiz">+</a>
 
-<!-- ✅ Chapters as Cards with Quizzes Table -->
+<!-- ✅ Chapters and Quizzes Cards -->
 <div class="row g-4" id="chapterCards">
     {% for chapter in chapters %}
-    <div class="col-md-6 col-lg-4 chapter-card">
+    <div class="col-md-6 col-lg-6 chapter-card">
         <div class="card shadow border border-primary">
 
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ chapter.name }}
-                    <span class="badge bg-warning text-dark">Chapter ID {{ chapter.id }}</span>
-                </h5>
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">{{ chapter.name }} 
+                        <span class="badge bg-warning text-dark neon-id-badge">ID {{ chapter.id }}</span>
+                    </h5>
+                </div>
             </div>
 
             <div class="card-body">
-
-                <!-- ✅ Quizzes Table with 3 Columns -->
+                <!-- ✅ Quizzes Table -->
                 <div class="table-responsive">
-                    <table class="table table-sm table-bordered mt-3">
-                        <thead class="table-primary text-center">
+                    <table class="table table-bordered mt-3">
+                        <thead class="table-light text-center">
                             <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Action</th>
+                                <th>Quiz Title</th>
+                                <th style="width: 140px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for quiz in chapter.quizzes %}
-                            <tr class="quiz-row">
-                                <td>{{ quiz.id }}</td>
-                                <td class="quiz-name">{{ quiz.name }}</td>
-                                <td class="text-center">
-                                    <a href="{{ url_for('admin.edit_quiz', id=quiz.id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                    <form action="{{ url_for('admin.delete_quiz', id=quiz.id) }}" method="post" class="d-inline">
-                                        <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this quiz?')">Del</button>
-                                        <a href="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" class="btn btn-success btn-sm w-50 mt-1">
-                                            <i class="fas fa-plus-circle"></i>Qns</a>
-                                    </form>
-                                    
-                                </td>
-                                
-                            </tr>
-                            
+                            {% if chapter.quizzes %}
+                                {% for quiz in chapter.quizzes %}
+                                <tr class="quiz-row">
+                                    <td class="quiz-name">
+                                        <a href="{{ url_for('admin.view_quiz', quiz_id=quiz.id) }}" class="text-decoration-none text-primary fw-bold">
+                                            {{ quiz.name }}
+                                        </a>
+                                    </td>                                    
+                                    <td class="text-center">
+                                        <a href="{{ url_for('admin.edit_quiz', id=quiz.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                        <form action="{{ url_for('admin.delete_quiz', id=quiz.id) }}" method="post" class="d-inline">
+                                            <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this quiz?')">
+                                                <i class="fas fa-trash-alt"></i> DLT
+                                            </button>
+                                        </form>
+                                        <a href="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" class="btn btn-success btn-sm mt-1">
+                                            <i class="fas fa-plus-circle"></i> Qns
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
                             {% else %}
-                            
-                            <tr>
-                                <td colspan="3" class="text-center text-muted">No quizzes available.</td>
-                            </tr>
-                            
-                            {% endfor %}
-                            
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted">No quizzes available.</td>
+                                </tr>
+                            {% endif %}
                         </tbody>
-                        
                     </table>
                 </div>
 
@@ -79,7 +78,6 @@
                    class="btn btn-success btn-sm w-100 mt-2">
                    <i class="fas fa-plus-circle"></i> Add Quiz
                 </a>
-                
             </div>
 
         </div>
@@ -87,11 +85,13 @@
     {% endfor %}
 </div>
 
-<!-- ✅ Custom Styling -->
+<!-- ✅ Optional Neon Styling & Hover Effects -->
 <style>
-    .table-primary { background-color: #007bff; color: #fff; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(13, 110, 253, 0.4); transition: 0.3s; }
-    .card-header.bg-dark { background-color: #343a40 !important; }
+    .neon-id-badge { border-radius: 8px; font-weight: bold; }
+    .btn-success:hover, .btn-primary:hover { box-shadow: 0 0 15px #28a745; }
+    .chapter-card .card { transition: transform 0.3s; min-height: 100%; }
+    .chapter-card .card:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); }
+    .table { width: 100%; }
 </style>
 
 <!-- ✅ Search Function -->

@@ -1,20 +1,118 @@
 {% extends "layout.html" %}
-{% block title %}Attempt Quiz: {{quiz.name}}{% endblock %}
+{% block title %}Attempt Quiz - {{ quiz.name }}{% endblock %}
 {% block content %}
-<h1 class="page-title">{{quiz.name}}</h1>
+
+<style>
+    body, .modern-bg {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    .quiz-header {
+        text-align: center;
+        color: #00aaff;
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .quiz-timer {
+        background-color: #ff4081;
+        color: #fff;
+        padding: 0.7rem 1.5rem;
+        border-radius: 30px;
+        display: inline-block;
+        font-weight: bold;
+        margin: 1rem auto;
+    }
+
+    .quiz-card {
+        background-color: #1e1e1e;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 0 25px rgba(0, 170, 255, 0.1);
+        margin-bottom: 2rem;
+        transition: 0.3s;
+    }
+
+    .quiz-card:hover {
+        box-shadow: 0 0 30px rgba(0, 170, 255, 0.3);
+    }
+
+    .question-number {
+        font-size: 1.3rem;
+        color: #00aaff;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .question-statement {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .quiz-options label {
+        display: block;
+        background-color: #2a2a2a;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .quiz-options label:hover {
+        background-color: #00aaff;
+        color: #121212;
+        font-weight: 600;
+    }
+
+    .quiz-options input {
+        margin-right: 1rem;
+    }
+
+    .submit-btn {
+        background-color: #00aaff;
+        color: #121212;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #008ecc;
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .quiz-card {
+            padding: 1rem;
+        }
+
+        .question-statement {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+<div class="quiz-header">{{ quiz.name }}</div>
 
 {% if quiz.time_duration > 0 %}
-<span id="timer" class="quiz-timer">00:00</span>
+<div class="quiz-timer" id="timer">00:00</div>
 {% endif %}
 
-<form id="quizForm" class="quiz-form" method="POST">
+<form id="quizForm" method="POST">
     {% for question in questions %}
-    <div class="quiz-question">
-        <div class="question-number">Question #{{ loop.index }}</div>
+    <div class="quiz-card">
+        <div class="question-number">Question {{ loop.index }}</div>
         <div class="question-statement">{{ question.question_statement }}</div>
         <div class="quiz-options">
             {% for option in [question.option1, question.option2, question.option3, question.option4] %}
-            <label class="radio-option">
+            <label>
                 <input type="radio" name="question_{{ question.id }}" value="{{ loop.index }}" required>
                 {{ option }}
             </label>
@@ -22,32 +120,32 @@
         </div>
     </div>
     {% endfor %}
-    <button type="submit" class="btn btn-primary btn-block">Submit Quiz</button>
+    <div class="text-center">
+        <button type="submit" class="submit-btn">Submit Quiz</button>
+    </div>
 </form>
-
 
 <script>
     const quizDuration = {{ quiz.time_duration }};
     if (quizDuration > 0) {
-        let timeLeft = quizDuration;
+        let timeLeft = quizDuration * 60;  // Convert minutes to seconds
 
         function updateTimer() {
-            let minutes = Math.floor(timeLeft / 60)
-            let seconds = timeLeft % 60
-            document.getElementById("timer").textContent = `
-    ${minutes.toString().padStart(2, '0')}:
-    ${seconds.toString().padStart(2, '0')}
-    `
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById("timer").textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             if (timeLeft <= 0) {
                 clearInterval(timeInterval);
-                alert("Time's up! Your quiz will be submitted automatically.");
-                document.getElementById("quizForm").submit()
+                alert("Time's up! Submitting your quiz automatically.");
+                document.getElementById("quizForm").submit();
             } else {
                 timeLeft--;
             }
         }
 
-        const timeInterval = setInterval(updateTimer, 1000)
+        const timeInterval = setInterval(updateTimer, 1000);
     }
 </script>
+
 {% endblock %}

@@ -1,5 +1,6 @@
 from app import db
 
+
 class Score(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     total_scored = db.Column(db.Integer, nullable=False)

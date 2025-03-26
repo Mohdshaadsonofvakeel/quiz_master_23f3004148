@@ -3,145 +3,124 @@
 {% block content %}
 
 <style>
-    .form-control {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid #00f2fe;
-        color: #e0e0e0 !important;  /* Enforce text color */
-        padding: 0.8rem;
-        border-radius: 8px;
-        transition: border 0.3s;
-    }
-    
-    .form-control:focus {
-        border-color: #00f2fe;
-        box-shadow: 0 0 10px #00f2fe;
-        color: #e0e0e0 !important;  /* Ensure color on focus */
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-    
-    /* Autofill fix for Chrome */
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus, 
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.1) inset !important;
-        -webkit-text-fill-color: #e0e0e0 !important;
-        color: #e0e0e0 !important;
-    }
-    
-    .auth-card, .auth-card * {
-        color: #e0e0e0 !important;
-    }
-    
-    .form-control {
-        color: #e0e0e0 !important;
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-    
-    .form-control::placeholder {
-        color: #cccccc;
-        opacity: 0.7;
-    }
-    
-    .form-label {
-        color: #00f2fe;
-    }
-    
-    input:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset;
-        -webkit-text-fill-color: #e0e0e0 !important;
-    }
-    
     .auth-container {
-        min-height: 80vh;
         display: flex;
         justify-content: center;
         align-items: center;
+        min-height: 80vh;
+        padding: 2rem;
     }
 
     .auth-card {
         background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        border-radius: 1rem;
-        padding: 3rem;
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        max-width: 700px;
         width: 100%;
-        max-width: 450px;
-        color: #fff;
-        box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
-        animation: fadeInUp 1s ease forwards;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        color: #e0e0e0;
+        transition: transform 0.3s ease;
+    }
+
+    .auth-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 0 25px #00f2fe;
     }
 
     .auth-header h1 {
         font-size: 2.5rem;
         color: #00f2fe;
-        text-shadow: 0 0 15px #00f2fe;
-        margin-bottom: 0.5rem;
+        text-shadow: 0 0 20px #00f2fe;
     }
 
     .auth-header p {
         color: #ccc;
+        margin-bottom: 1.5rem;
     }
 
-    .form-group {
-        margin-bottom: 1.5rem;
+    .form-label {
+        color: #00f2fe;
+        font-weight: 600;
     }
 
     .form-control {
         background-color: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
         border: 1px solid #00f2fe;
-        color: #fff;
-        padding: 0.8rem;
-        border-radius: 8px;
-        transition: border 0.3s;
+        border-radius: 10px;
+        padding: 0.75rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-control::placeholder {
+        color: #aaa;
     }
 
     .form-control:focus {
         border-color: #00f2fe;
         box-shadow: 0 0 10px #00f2fe;
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        flex: 1 1 45%;
     }
 
     .btn-glow {
         background-color: #00f2fe;
         color: #111;
-        font-weight: bold;
-        padding: 0.8rem 2rem;
-        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
         box-shadow: 0 0 15px #00f2fe;
-        transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .btn-glow:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 0 30px #00f2fe;
+        transform: translateY(-5px);
+        background-color: #00d4e4;
+        box-shadow: 0 0 25px #00f2fe;
     }
 
-    .animated-link {
+    .auth-footer p {
+        margin-top: 2rem;
+        text-align: center;
+        color: #ccc;
+    }
+
+    .auth-footer a {
         color: #00f2fe;
+        font-weight: bold;
         text-decoration: none;
-        transition: color 0.3s;
     }
 
-    .animated-link:hover {
-        color: #00c2e2;
+    .auth-footer a:hover {
         text-decoration: underline;
     }
 
-    .password-toggle {
-        cursor: pointer;
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #00f2fe;
+    /* Autofill Fix */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset;
+        -webkit-text-fill-color: #e0e0e0;
     }
 
-    .input-wrapper {
-        position: relative;
-    }
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+        }
 
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(50px); }
-        to { opacity: 1; transform: translateY(0); }
+        .form-group {
+            flex: 1 1 100%;
+        }
     }
 </style>
 
@@ -185,7 +164,7 @@
                 {% endif %}
             </div>
             
-            <div class="form-actions text-center">
+            <div class="form-actions text-center mt-4">
                 {{ form.submit(class_="btn btn-glow btn-animated", value="Sign In") }}
             </div>
         </form>
@@ -209,5 +188,6 @@
         });
     });
 </script>
+
 
 {% endblock %}

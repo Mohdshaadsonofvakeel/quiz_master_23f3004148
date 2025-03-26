@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block title %}Quiz Details{% endblock %}
+{% block content %}
+
+<style>
+    .modern-card {
+        background-color: #1e1e1e;
+        border-radius: 15px;
+        color: #e0e0e0;
+        box-shadow: 0 0 25px rgba(0, 170, 255, 0.15);
+    }
+
+    .modern-table th {
+        width: 220px;
+        color: #00bfff;
+        font-weight: 600;
+        background-color: #121212;
+        padding: 12px 20px;
+        border-bottom: 1px solid #333;
+    }
+
+    .modern-table td {
+        padding: 12px 20px;
+        background-color: #1e1e1e;
+        border-bottom: 1px solid #333;
+    }
+
+    .page-heading {
+        font-size: 2rem;
+        color: #fff;
+        background-color: #121212;
+        padding: 15px;
+        text-align: center;
+        border-radius: 8px;
+        font-weight: 700;
+        box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+    }
+
+    .btn-secondary {
+        background-color: #00bfff;
+        color: #121212;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #008ecc;
+        color: #fff;
+    }
+</style>
+
+<div class="container">
+    <div class="card shadow-lg p-4 modern-card">
+        <div class="page-heading">Quiz Details</div>
+
+        <table class="table table-borderless modern-table mt-4">
+            <tbody>
+                <tr><th>Quiz ID</th><td>{{ quiz.id }}</td></tr>
+                <tr><th>Subject</th><td>{{ subject.name }}</td></tr>
+                <tr><th>Chapter</th><td>{{ chapter.name }}</td></tr>
+                <tr><th>Number of Questions</th><td>{{ quiz.questions|length }}</td></tr>
+                <tr>
+                    <th>Scheduled Date & Duration</th>
+                    <td>
+                        {{ quiz.date_of_quiz.strftime('%Y-%m-%d') if quiz.date_of_quiz else 'Not Scheduled' }}
+                        | {{ quiz.time_duration }} mins
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('users.dashboard') }}" class="btn btn-secondary">Close</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

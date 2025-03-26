@@ -11,6 +11,7 @@ from app.models.user import User
 users_data = [
     {
         "username": "johndoe",
+        "email": "johndoe@example.com",
         "password": "password",
         "fullname": "John Doe",
         "qualification": "B.Tech",
@@ -19,6 +20,7 @@ users_data = [
     {
         "username": "janedoe",
         "password": "password",
+        "email": "johndo@example.com",
         "fullname": "Jane Doe",
         "qualification": "M.Tech",
         "dob": datetime(1992, 1, 1)
@@ -26,6 +28,7 @@ users_data = [
     {
         "username": "bobsmith",
         "password": "password",
+        "email": "johnd@example.com",
         "fullname": "Bob Smith",
         "qualification": "B.Sc",
         "dob": datetime(1995, 1, 1)
@@ -285,6 +288,7 @@ def seed_database():
         user = User(
             username=user_data["username"],
             fullname=user_data["fullname"],
+            email=user_data["email"],
             qualification=user_data["qualification"],
             dob=user_data["dob"]
         )

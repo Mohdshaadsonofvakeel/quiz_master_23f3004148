@@ -8,6 +8,7 @@ def create_admin():
     if not admin:
         admin = User(
             username=os.getenv('ADMIN_USERNAME'),
+            email=os.getenv('ADMIN_EMAIL', 'admin@quiz.com'),  # ✅ Ensure email is set
             fullname="Quiz Master Admin",
             is_admin=True
         )
