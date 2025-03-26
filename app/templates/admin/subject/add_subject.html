@@ -3,15 +3,16 @@
 {% block content %}
 
 <div class="container mt-5">
-    <div class="card shadow-lg p-4" style="border-radius: 15px; background: #f8f9fa;">
+    <div class="card shadow-lg p-4 glassmorphism">
         <h2 class="text-center text-primary mb-4">✨ Add New Subject ✨</h2>
 
         <form method="post">
             {{ form.hidden_tag() }}
 
+            <!-- Subject Name -->
             <div class="form-group mb-4">
-                {{ form.name.label(class_="form-label fw-semibold") }}
-                {{ form.name(class_="form-control rounded-pill shadow-sm", placeholder="Enter Subject Name...") }}
+                {{ form.name.label(class_="form-label fw-semibold text-light") }}
+                {{ form.name(class_="form-control rounded-pill shadow-sm neon-input", placeholder="Enter Subject Name...") }}
                 {% if form.name.errors %}
                 <ul class="errors text-danger mt-2">
                     {% for error in form.name.errors %}
@@ -21,9 +22,10 @@
                 {% endif %}
             </div>
 
+            <!-- Subject Description -->
             <div class="form-group mb-4">
-                {{ form.description.label(class_="form-label fw-semibold") }}
-                {{ form.description(class_="form-control rounded-pill shadow-sm", placeholder="Short Description...") }}
+                {{ form.description.label(class_="form-label fw-semibold text-light") }}
+                {{ form.description(class_="form-control rounded-pill shadow-sm neon-input", placeholder="Short Description...") }}
                 {% if form.description.errors %}
                 <ul class="errors text-danger mt-2">
                     {% for error in form.description.errors %}
@@ -33,9 +35,10 @@
                 {% endif %}
             </div>
 
+            <!-- Action Buttons -->
             <div class="d-flex gap-3 mt-4">
-                {{ form.submit(class_="btn btn-success w-50 rounded-pill shadow-sm") }}
-                <a href="{{ url_for('admin.manage_subjects') }}" class="btn btn-danger w-50 rounded-pill shadow-sm">
+                {{ form.submit(class_="btn btn-success w-50 rounded-pill shadow-sm glow-button") }}
+                <a href="{{ url_for('admin.manage_subjects') }}" class="btn btn-danger w-50 rounded-pill shadow-sm glow-danger">
                     ❌ Cancel
                 </a>
             </div>
@@ -43,21 +46,50 @@
     </div>
 </div>
 
-<!-- Optional: Extra Styling -->
+<!-- ✅ Improved Styling -->
 <style>
-    .btn-success:hover {
-        background-color: #28a745;
+    /* Glassmorphism Card */
+    .glassmorphism {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+    }
+
+    /* Neon Input Fields */
+    .neon-input {
+        font-size: 16px;
+        padding: 12px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        transition: all 0.3s;
+    }
+
+    .neon-input:focus {
+        border-color: #00f2fe;
+        box-shadow: 0 0 15px #00f2fe;
+    }
+
+    /* Buttons */
+    .btn-sm {
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+
+    .glow-button:hover {
         box-shadow: 0 0 15px #28a745;
     }
 
-    .btn-danger:hover {
-        background-color: #dc3545;
-        box-shadow: 0 0 15px #dc3545;
+    .glow-danger:hover {
+        box-shadow: 0 0 15px red;
     }
 
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 10px #007bff;
+    /* Text Light */
+    .text-light {
+        color: #e0e0e0;
     }
 </style>
 

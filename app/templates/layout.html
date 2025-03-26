@@ -13,6 +13,29 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const main = document.querySelector('main');
+        main.classList.add('page-enter');
+        setTimeout(() => main.classList.add('page-enter-active'), 50);
+    });
+
+    // Optional: Handle link clicks for smoother exits (if needed)
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function (e) {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+                e.preventDefault();
+                const main = document.querySelector('main');
+                main.classList.add('page-exit');
+                main.classList.remove('page-enter-active');
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 400); // Match exit transition time
+            }
+        });
+    });
+</script>
 
 <body class="modern-bg {% if current_user.is_authenticated %}user-logged-in{% endif %}">
 
@@ -32,9 +55,10 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if current_user.is_authenticated %}
                         {% if current_user.is_admin %}
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_subjects') }}"><i class="fas fa-book"></i> Subjects</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_quizzes') }}"><i class="fas fa-question-circle"></i> Quizzes</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_subjects') }}"><i class="fas fa-book"></i> Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_quizzes') }}"><i class="fas fa-question-circle"></i> Chapter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manage_quiz_bank') }}"><i class="fas fa-book"></i> Quiz</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Summary</a></li>
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('users.dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('users.leaderboard') }}"><i class="fas fa-chart-bar"></i> Leaderboard</a></li>

@@ -1,46 +1,118 @@
 {% extends "layout.html" %}
 {% block title %}Add Chapter{% endblock %}
 {% block content %}
-<h1 class="page-title">Add Chapter</h1>
 
-<form method="post">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.name.label(class_="form-label") }}
-        {{ form.name(class_="form-control") }}
-        {% if form.name.errors %}
-        <ul class="errors text-danger mt-2">
-            {% for error in form.name.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 glassmorphism">
+        <h2 class="text-center text-primary mb-4">📖 Add New Chapter</h2>
+
+        <form method="post">
+            {{ form.hidden_tag() }}
+
+            <!-- Chapter Name -->
+            <div class="form-group mb-4">
+                {{ form.name.label(class_="form-label fw-semibold") }}
+                {{ form.name(class_="form-control rounded-pill shadow-sm", placeholder="Enter Chapter Name...") }}
+                {% if form.name.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.name.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <!-- Chapter Description -->
+            <div class="form-group mb-4">
+                {{ form.description.label(class_="form-label fw-semibold") }}
+                {{ form.description(class_="form-control rounded shadow-sm", placeholder="Enter Description...") }}
+                {% if form.description.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.description.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <!-- Select Subject (Dropdown) -->
+            <div class="form-group mb-4">
+                {{ form.subject_id.label(class_="form-label fw-semibold") }}
+                {{ form.subject_id(class_="form-control select-dropdown shadow-sm") }}
+                {% if form.subject_id.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.subject_id.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex gap-3 mt-4">
+                {{ form.submit(class_="btn btn-success w-50 rounded-pill shadow-sm glow-button") }}
+                <a href="{{ url_for('admin.manage_chapters') }}" class="btn btn-danger w-50 rounded-pill shadow-sm glow-danger">
+                    ❌ Cancel
+                </a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        {{ form.description.label(class_="form-label") }}
-        {{ form.description(class_="form-control") }}
-        {% if form.description.errors %}
-        <ul class="errors text-danger mt-2">
-            {% for error in form.description.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-    <div class="form-group">
-        {{ form.subject_id.label(class_="form-label") }}
-        {{ form.subject_id(class_="form-control") }}
-        {% if form.subject_id.errors %}
-        <ul class="errors text-danger mt-2">
-            {% for error in form.subject_id.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </div>
-    <div>
-        {{ form.submit(class_="btn btn-primary btn-block") }}
-    </div>
-</form>
+</div>
+
+<!-- ✅ Optional Styling -->
+<style>
+    /* Glassmorphism Card */
+    .glassmorphism {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+    }
+
+    /* Input Fields */
+    .form-control {
+        font-size: 16px;
+        padding: 12px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #00f2fe;
+        box-shadow: 0 0 10px #00f2fe;
+    }
+
+    /* Dropdown Fix */
+    .select-dropdown {
+        background: #111;
+        color: #fff;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    .select-dropdown option {
+        background: #222;
+        color: #fff;
+        padding: 10px;
+    }
+
+    /* Buttons */
+    .btn-sm {
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+
+    .glow-button:hover {
+        box-shadow: 0 0 15px #28a745;
+    }
+
+    .glow-danger:hover {
+        box-shadow: 0 0 15px red;
+    }
+</style>
 
 {% endblock %}

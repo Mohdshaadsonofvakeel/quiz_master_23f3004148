@@ -13,11 +13,11 @@ def register():
     if form.validate_on_submit():
         user = User(
     username=form.username.data,
-    email=form.username.data,  # ✅ FILL this too
+    email=form.username.data,  # ✅ Store email separately
     fullname=form.fullname.data,
     qualification=form.qualification.data,
-    dob=form.dob.data
-)
+    dob=form.dob.data)
+
 
         user.set_password(form.password.data)
         db.session.add(user)
@@ -38,7 +38,7 @@ def login():
             login_user(user)
             if user.is_admin:
                 flash("Admin logged in successfully!", category="success")
-                return redirect(url_for("admin.admin_dashboard"))
+                return redirect(url_for("admin.manage_subjects"))
             else:
                 flash('Login successful!', category="success")
                 return redirect(url_for('users.dashboard'))

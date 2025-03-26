@@ -1,33 +1,90 @@
 {% extends "layout.html" %}
 {% block title %}Manage Quiz Questions{% endblock %}
 {% block content %}
-<h1 class="page-title">Manage Questions for {{ quiz.name }}</h1>
 
-<a href="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" class="btn btn-primary mb-4">Add Quiz Question</a>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 neon-card">
+        <h1 class="page-title">📝 Manage Questions for <span class="text-warning">{{ quiz.name }}</span></h1>
 
-<div class="table-container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Statement</th>
-                <th colspan="2">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for question in questions %}
-            <tr>
-                <td>{{ question.id }}</td>
-                <td>{{ question.question_statement }}</td>
+        <!-- ✅ Top Buttons: Add & Return -->
+        <div class="d-flex justify-content-between mb-4">
+            <a href="{{ url_for('admin.manage_quiz_bank') }}" class="btn btn-secondary shadow-sm">
+                ⬅️ Return to Manage Quizzes
+            </a>
+            <a href="{{ url_for('admin.add_question', quiz_id=quiz.id) }}" class="btn btn-primary shadow-sm">
+                ➕ Add New Question
+            </a>
+        </div>
 
-                <td colspan="2" class="action-buttons">
-                    <a href="#" class="btn btn-edit btn-sm">Edit</a>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <!-- ✅ Questions Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered text-light text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Statement</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if questions %}
+                        {% for question in questions %}
+                        <tr>
+                            <td><span class="badge bg-info text-dark">#{{ question.id }}</span></td>
+                            <td>{{ question.question_statement }}</td>
+                            <td class="text-center">
+                                <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <form action="{{ url_for('admin.delete_question', question_id=question.id) }}" method="post" class="d-inline">
+                                
+                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this question?')">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-muted">No questions added yet.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<!-- ✅ Styling & Animations -->
+<style>
+    /* 🟢 Glowing Title */
+    .page-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #00f2fe;
+        text-shadow: 0 0 15px #00f2fe;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    /* 🟢 Neon Themed Card */
+    .neon-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        color: #e0e0e0;
+    }
+
+    /* 🟢 Table Styles */
+    .table { border-radius: 10px; overflow: hidden; }
+    .table-dark { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+
+    /* 🟢 Hover Effects */
+    .btn-primary:hover { box-shadow: 0 0 15px #007bff; }
+    .btn-danger:hover { box-shadow: 0 0 15px #dc3545; }
+    .btn-warning:hover { box-shadow: 0 0 15px #ffc107; }
+</style>
 
 {% endblock %}

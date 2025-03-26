@@ -7,11 +7,13 @@ from flask_login import UserMixin
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)  # ✅ Add this back
     password_hash = db.Column(db.String(200), nullable=False)
     fullname = db.Column(db.String(150))
     qualification = db.Column(db.String(100))
     dob = db.Column(db.Date)
     is_admin = db.Column(db.Boolean, default=False)
+
 
     @property
     def is_active(self):

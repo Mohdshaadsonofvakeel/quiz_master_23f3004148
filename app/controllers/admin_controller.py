@@ -34,7 +34,27 @@ def admin_dashboard():
     total_users = User.query.count()
     total_subjects = Subject.query.count()
     total_questions = Question.query.count()
+    total_quizzes = Quiz.query.count()
+    total_attempts = Score.query.count()
+    
+    total_score = db.session.query(db.func.sum(Score.total_scored)).scalar() or 0
+    max_possible_score = total_attempts * 100 if total_attempts > 0 else 1
+    average_score_percentage = round((total_score / max_possible_score) * 100, 2)
+    
+    # 📊 Quiz Attempts Over Time
+    attempts_by_date = db.session.query(
+        db.func.date(Score.timestamp), db.func.count(Score.id)
+    ).group_by(db.func.date(Score.timestamp)).all()
+    
+    attempt_dates = [str(date) for date, count in attempts_by_date]
+    attempts_over_time = [count for date, count in attempts_by_date]
 
+    # 📊 Score Distribution Ranges
+    ranges = [(0, 20), (21, 40), (41, 60), (61, 80), (81, 100)]
+    score_counts = [Score.query.filter(Score.total_scored.between(r[0], r[1])).count() for r in ranges]
+    score_ranges = [f"{r[0]}-{r[1]}" for r in ranges]
+
+    # 📊 Subject Performance
     subjects = Subject.query.all()
     subject_names = [subject.name for subject in subjects]
     subject_top_scores = []
@@ -50,6 +70,7 @@ def admin_dashboard():
         subject_top_scores.append(top_score)
         subject_attempts.append(len(scores))
 
+    # 📊 Quiz Performance
     quizzes = Quiz.query.all()
     quiz_names = [quiz.name for quiz in quizzes]
     average_scores = []
@@ -57,42 +78,51 @@ def admin_dashboard():
 
     for quiz in quizzes:
         scores = Score.query.filter_by(quiz_id=quiz.id).all()
-        if scores:
-            avg = sum([s.total_scored for s in scores]) / len(scores)
-            average_scores.append(avg)
-            completion_rates.append((len(scores) / (User.query.count() - 1)) * 100)
-        else:
-            average_scores.append(0)
-            completion_rates.append(0)
+        avg = sum([s.total_scored for s in scores]) / len(scores) if scores else 0
+        completion_rate = (len(scores) / (User.query.count() - 1)) * 100 if scores else 0
+        average_scores.append(avg)
+        completion_rates.append(completion_rate)
 
-    recent_attempts = Score.query.order_by(Score.timestamp.desc()).limit(5).all()
+    # ✅ Fix Recent Quiz Attempts
+    recent_attempts = Score.query.options(
+        joinedload(Score.user), joinedload(Score.quiz)
+    ).order_by(Score.timestamp.desc()).limit(5).all()
+
     recent_attempts_data = [{
-        "user": User.query.get(s.user_id).fullname,
-        "quiz": Quiz.query.get(s.quiz_id).name,
+        "user": s.user.fullname if s.user else "Unknown",
+        "quiz": s.quiz.name if s.quiz else "Unknown",
         "score": s.total_scored,
-        "date": s.timestamp.strftime('%Y-%m-%d')
+        "date": s.timestamp.strftime('%Y-%m-%d') if s.timestamp else "N/A"
     } for s in recent_attempts]
 
+    # ✅ Fix Recent Users
     recent_users = User.query.filter(User.is_admin == False).order_by(User.id.desc()).limit(5).all()
+
     recent_users_data = [{
-        "name": u.fullname,
+        "fullname": u.fullname if u.fullname else "Unknown",
         "email": u.email if hasattr(u, 'email') else u.username,
         "qualification": u.qualification
     } for u in recent_users]
 
-    return render_template("admin/dashboard.html",
+    return render_template('admin/dashboard.html',
                            total_users=total_users,
                            total_subjects=total_subjects,
                            total_questions=total_questions,
+                           total_quizzes=total_quizzes,
+                           total_attempts=total_attempts,
+                           average_score_percentage=average_score_percentage,
                            subject_names=subject_names,
                            subject_top_scores=subject_top_scores,
                            subject_attempts=subject_attempts,
                            quiz_names=quiz_names,
                            average_scores=average_scores,
                            completion_rates=completion_rates,
+                           attempt_dates=attempt_dates,
+                           attempts_over_time=attempts_over_time,
+                           score_ranges=score_ranges,
+                           score_counts=score_counts,
                            recent_attempts=recent_attempts_data,
                            recent_users=recent_users_data)
-
 
 @admin_bp.route("/admin/manage_subjects")
 @admin_login_required
@@ -272,9 +302,38 @@ def add_question(quiz_id):
 def view_quiz(quiz_id):
     quiz = Quiz.query.get_or_404(quiz_id)
     return render_template('admin/quiz/view_quiz.html', quiz=quiz)
-@admin_bp.route('/manage/quiz-question')
+@admin_bp.route('/admin/manage_quiz_bank')  # Change this URL
 @admin_login_required
-def manage_quiz_question():
-    quizzes = Quiz.query.options(joinedload(Quiz.chapter).joinedload(Chapter.subject),
-                                 joinedload(Quiz.questions)).all()
-    return render_template('admin/quiz/manage_quiz_question.html', quizzes=quizzes)
+def manage_quiz_bank():
+    quizzes = Quiz.query.options(
+        joinedload(Quiz.chapter).joinedload(Chapter.subject),
+        joinedload(Quiz.questions)
+    ).all()
+    return render_template('admin/quiz/manage_quiz_bank.html', quizzes=quizzes)
+@admin_bp.route("/admin/edit_question/<int:question_id>", methods=['GET', 'POST'])
+@admin_login_required
+def edit_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    form = QuestionForm(obj=question)
+
+    if form.validate_on_submit():
+        question.question_statement = form.question_statement.data
+        question.option1 = form.option1.data
+        question.option2 = form.option2.data
+        question.option3 = form.option3.data
+        question.option4 = form.option4.data
+        question.correct_option = form.correct_option.data
+        db.session.commit()
+        flash("Question updated successfully!", category="success")
+        return redirect(url_for("admin.manage_quiz_questions", quiz_id=question.quiz_id))
+
+    return render_template("admin/question/edit_question.html", form=form, question=question)
+
+@admin_bp.route("/admin/delete_question/<int:question_id>", methods=['POST'])
+@admin_login_required
+def delete_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    db.session.delete(question)
+    db.session.commit()
+    flash("Question deleted successfully!", category="success")
+    return redirect(url_for("admin.manage_quiz_questions", quiz_id=question.quiz_id))

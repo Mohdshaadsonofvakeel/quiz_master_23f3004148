@@ -2,10 +2,12 @@
 {% block title %}Manage Subjects{% endblock %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="page-title">Manage Subjects</h1>
-    
-</div>
+<!-- ✅ Glowing Admin Dashboard Heading -->
+<h1 class="page-title">Admin Dashboard</h1>
+
+<!-- ✅ Manage Subjects Heading -->
+<h2 class="sub-title">📚 Manage Subjects</h2>
+
 
 <!-- ✅ Floating Add Subject Button -->
 <a href="{{ url_for('admin.add_subject') }}" 
@@ -97,6 +99,25 @@
 
 <!-- ✅ Optional Neon Styling -->
 <style>
+    /* ✅ Glowing Admin Dashboard Heading */
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #00f2fe;
+        text-shadow: 0 0 15px #00f2fe;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    /* ✅ Manage Subjects Heading */
+    .sub-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #fff;
+        text-shadow: 0 0 10px #4facfe;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
     .neon-id-badge { border-radius: 8px; font-weight: bold; }
     .btn-success:hover, .btn-primary:hover { box-shadow: 0 0 15px #28a745; }
     .subject-card .card { transition: transform 0.3s; min-height: 100%; }

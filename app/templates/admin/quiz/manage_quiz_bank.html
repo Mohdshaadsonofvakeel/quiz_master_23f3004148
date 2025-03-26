@@ -1,17 +1,10 @@
 {% extends "layout.html" %}
-{% block title %}Manage Quiz Question{% endblock %}
+{% block title %}Manage Quiz Bank{% endblock %}
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="page-title">Manage Quiz Question</h1>
-</div>
 
-<!-- ✅ Floating Add Quiz Button -->
-<a href="{{ url_for('admin.add_quiz') }}" 
-   class="btn btn-primary rounded-circle shadow-lg" 
-   style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; 
-          font-size: 28px; text-align: center; padding: 0; z-index: 9999;"
-   title="Add New Quiz">+</a>
+<!-- ✅ Manage Quiz Questions Heading -->
+<h2 class="sub-title">📘 Manage Quiz Questions</h2>
 
 <!-- ✅ Quiz Cards -->
 <div class="row g-4">
@@ -19,10 +12,11 @@
     <div class="col-md-6 col-lg-6">
         <div class="card shadow border border-primary">
 
-            <!-- Quiz Card Header (Clickable to view details) -->
+            <!-- ✅ Quiz Card Header (Clickable to View Quiz Details) -->
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <a href="{{ url_for('admin.view_quiz', quiz_id=quiz.id) }}" class="text-white text-decoration-none">
-                    <h5 class="mb-0">{{ quiz.name }} <span class="badge bg-warning text-dark">ID {{ quiz.id }}</span></h5>
+                <a href="{{ url_for('admin.view_quiz', quiz_id=quiz.id) }}" 
+                   class="text-white text-decoration-none">
+                    <h5 class="mb-0">📖 {{ quiz.name }}</h5>
                 </a>
             </div>
 
@@ -35,27 +29,31 @@
                     <table class="table table-bordered mt-3">
                         <thead class="table-light text-center">
                             <tr>
-                                <th>Qn</th>
-                                <th>Statement</th>
-                                <th>Action</th>
+                                <th>ID</th>
+                                <th>Question Statement</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% if quiz.questions %}
                                 {% for question in quiz.questions %}
                                 <tr>
-                                    <td>{{ loop.index }}</td>
+                                    <td>{{ question.id }}</td>
                                     <td>{{ question.question_statement }}</td>
                                     <td class="text-center">
-                                        <a href="{{ url_for('admin.edit_question', id=question.id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                        <form action="{{ url_for('admin.delete_question', id=question.id) }}" method="post" class="d-inline">
+                                        <a href="{{ url_for('admin.edit_question', question_id=question.id) }}" class="btn btn-warning btn-sm">Edit</a>
+
+                                        <form action="{{ url_for('admin.delete_question', question_id=question.id) }}" method="post" class="d-inline">
+
                                             <button class="btn btn-danger btn-sm" onclick="return confirm('Delete this question?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
                                 {% endfor %}
                             {% else %}
-                                <tr><td colspan="3" class="text-center text-muted">No questions added yet.</td></tr>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted">No questions added yet.</td>
+                                </tr>
                             {% endif %}
                         </tbody>
                     </table>
@@ -75,10 +73,36 @@
 
 <!-- ✅ Styling -->
 <style>
-    .page-title { font-size: 1.8rem; }
-    .card { transition: 0.3s ease; min-height: 100%; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(0,123,255,0.3); }
-    .table { width: 100%; }
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #00f2fe;
+        text-shadow: 0 0 15px #00f2fe;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .sub-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #fff;
+        text-shadow: 0 0 10px #4facfe;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        min-height: 100%;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
+    }
+    .table {
+        width: 100%;
+    }
+    .quiz-name a:hover {
+        text-shadow: 0 0 10px #00f2fe;
+    }
 </style>
 
 {% endblock %}

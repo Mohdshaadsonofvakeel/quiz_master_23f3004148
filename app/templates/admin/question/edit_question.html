@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block title %}Edit Question{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 neon-card">
+        <h2 class="text-center text-info mb-4 neon-title">✏️ Edit Question</h2>
+
+        <form method="post">
+            {{ form.hidden_tag() }}
+
+            <!-- ✅ Question Statement -->
+            <div class="form-group mb-4">
+                {{ form.question_statement.label(class_="form-label fw-semibold text-light") }}
+                {{ form.question_statement(class_="form-control neon-input", placeholder="Enter Question Statement") }}
+                {% if form.question_statement.errors %}
+                <ul class="errors text-danger mt-2">
+                    {% for error in form.question_statement.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <!-- ✅ Options Grid -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ form.option1.label(class_="form-label fw-semibold text-light") }}
+                    {{ form.option1(class_="form-control neon-input", placeholder="Option 1") }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.option2.label(class_="form-label fw-semibold text-light") }}
+                    {{ form.option2(class_="form-control neon-input", placeholder="Option 2") }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.option3.label(class_="form-label fw-semibold text-light") }}
+                    {{ form.option3(class_="form-control neon-input", placeholder="Option 3") }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.option4.label(class_="form-label fw-semibold text-light") }}
+                    {{ form.option4(class_="form-control neon-input", placeholder="Option 4") }}
+                </div>
+            </div>
+
+            <!-- ✅ Correct Option -->
+            <div class="form-group mt-4">
+                {{ form.correct_option.label(class_="form-label fw-semibold text-light") }}
+                {{ form.correct_option(class_="form-control neon-input", placeholder="Correct Option (1-4)") }}
+            </div>
+
+            <!-- ✅ Buttons -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('admin.manage_quiz_questions', quiz_id=question.quiz_id) }}" class="btn btn-danger shadow-sm">
+                    ❌ Cancel
+                </a>
+                {{ form.submit(class_="btn btn-success shadow-sm") }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ Styling -->
+<style>
+    /* 🌟 Neon Theme */
+    .neon-title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 0 0 10px #00f2fe, 0 0 20px #00f2fe;
+    }
+    .neon-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        color: #e0e0e0;
+    }
+    .neon-input {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: 0.3s;
+    }
+    .neon-input:focus {
+        border-color: #00f2fe;
+        box-shadow: 0 0 15px #00f2fe;
+    }
+    .btn-success:hover {
+        background-color: #28a745;
+        box-shadow: 0 0 15px #28a745;
+    }
+    .btn-danger:hover {
+        background-color: #dc3545;
+        box-shadow: 0 0 15px #dc3545;
+    }
+</style>
+
+{% endblock %}
