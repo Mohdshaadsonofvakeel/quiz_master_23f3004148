@@ -1,51 +1,147 @@
 {% extends "layout.html" %}
 {% block title %}Leaderboard{% endblock %}
+
 {% block head %}
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{% endblock %}
-{% block content %}
-<h1 class="page-title">Leaderboard</h1>
+<style>
+    /* Premium Styling */
+    body {
+        background: #0d1117;  /* Modern Dark Theme */
+        color: #e6edf3;  /* Soft White for Eye Comfort */
+        font-family: 'Poppins', sans-serif;
+    }
 
+    .page-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #ff9f40;
+    }
+
+    .card {
+        background: linear-gradient(145deg, #161b22, #1c2128); /* Subtle 3D effect */
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .card h5 {
+        color: #ffce56;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+    }
+
+    canvas {
+        max-height: 300px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">🏆 Leaderboard</h1>
+
+
+
+<!-- Monthly Quiz Attempts Pie Chart -->
 <div class="card">
     <div class="card-body">
-        <canvas id="leaderboardChart"></canvas>
+        <h5>📊 Monthly Quiz Attempts</h5>
+        <canvas id="monthlyQuizChart"></canvas>
     </div>
 </div>
 
+<!-- Subject-wise Quiz Attempts Histogram -->
+<div class="card">
+    <div class="card-body">
+        <h5>📚 Subject-wise Quiz Attempts</h5>
+        <canvas id="subjectQuizChart"></canvas>
+    </div>
+</div>
+<!-- Total Score Leaderboard -->
+<div class="card">
+    <div class="card-body">
+        <h5>Total Score Leaderboard</h5>
+        <canvas id="leaderboardChart"></canvas>
+    </div>
+</div>
 <script>
-    const ctx = document.getElementById('leaderboardChart');
+    
 
-    new Chart(ctx, {
+    // Monthly Quiz Attempts Pie Chart
+    new Chart(document.getElementById('monthlyQuizChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ month_labels| tojson }},
+            datasets: [{
+                label: 'Quiz Attempts',
+                data: {{ month_attempts| tojson }},
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff9f40'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: '#e6edf3' }}
+            }
+        }
+    });
+
+    // Subject-wise Quiz Attempts Histogram
+    new Chart(document.getElementById('subjectQuizChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ subject_labels| tojson }},
+            datasets: [{
+                label: 'Number of Quizzes',
+                data: {{ subject_attempts| tojson }},
+                backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            indexAxis: 'x',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { title: { display: true, text: 'Subjects', color: '#e6edf3' }},
+                y: { beginAtZero: true, title: { display: true, text: 'Number of Quizzes', color: '#e6edf3' }}
+            },
+            plugins: {
+                legend: { labels: { color: '#e6edf3' }}
+            }
+        }
+    });
+    // Total Score Leaderboard Chart
+    new Chart(document.getElementById('leaderboardChart'), {
         type: 'bar',
         data: {
             labels: {{ user_fullnames| tojson }},
-        datasets: [{
-            label: 'Total Score',
-            data: {{ user_total_scores| tojson }},
-        borderWidth: 1,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-            }],
+            datasets: [{
+                label: 'Total Score',
+                data: {{ user_total_scores| tojson }},
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2
+            }]
         },
         options: {
-        indexAxis: 'y',  // Makes the chart horizontal
-        scales: {
-            x: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Total Score'
-                }
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, title: { display: true, text: 'Total Score', color: '#e6edf3' }},
+                y: { title: { display: true, text: 'Users', color: '#e6edf3' }}
             },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Users'
-                }
+            plugins: {
+                legend: { labels: { color: '#e6edf3' }}
             }
         }
-    }
-    })
+    });
 </script>
 {% endblock %}

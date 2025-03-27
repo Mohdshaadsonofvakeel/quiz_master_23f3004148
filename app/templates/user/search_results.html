@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Search Results for "{{ query }}"</h2>
+
+{% if quizzes %}
+<h3>Quizzes</h3>
+<table class="table table-dark table-hover">
+    <thead>
+        <tr>
+            <th>Quiz Name</th>
+            <th>Date <a href="?q={{ query }}&sort=date_desc">↓</a> <a href="?q={{ query }}&sort=date_asc">↑</a></th>
+            <th>Duration <a href="?q={{ query }}&sort=score_desc">↓</a> <a href="?q={{ query }}&sort=score_asc">↑</a></th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for quiz in quizzes %}
+        <tr>
+            <td>{{ quiz.name }}</td>
+            <td>{{ quiz.date_of_quiz.strftime('%Y-%m-%d') }}</td>
+            <td>{{ quiz.time_duration//60}}min</td>
+            <td>
+                <a href="{{ url_for('users.attempt_quiz', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">Attempt</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if scores %}
+<h3>Score Details</h3>
+<table class="table table-dark table-hover">
+    <thead>
+        <tr>
+            <th>Quiz Name</th>
+            <th>User</th>
+            <th>Score</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for score in scores %}
+        <tr>
+            <td>{{ score.quiz.name }}</td>
+            <td>{{ score.user.fullname }}</td>
+            <td>{{ score.total_scored }}</td>
+            <td>{{ score.timestamp.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if not quizzes and not scores %}
+<p>No results found.</p>
+{% endif %}
+
+{% endblock %}

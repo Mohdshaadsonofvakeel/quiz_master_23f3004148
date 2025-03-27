@@ -1,79 +1,184 @@
 {% extends "layout.html" %}
-{% block title %}Quiz Details{% endblock %}
+{% block title %}Quiz Details - {{ quiz.name }}{% endblock %}
 {% block content %}
 
 <style>
-    .modern-card {
-        background-color: #1e1e1e;
-        border-radius: 15px;
-        color: #e0e0e0;
-        box-shadow: 0 0 25px rgba(0, 170, 255, 0.15);
+    body {
+        background: linear-gradient(135deg,rgb(255, 255, 255),rgb(0, 0, 0));
+        color:rgb(216, 0, 0);
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .premium-card {
+        background: linear-gradient(145deg,rgb(153, 26, 12),rgb(186, 0, 0));
+        border-radius: 18px;
+        color:rgb(0, 0, 0);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        padding: 2.5rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .modern-table th {
-        width: 220px;
-        color: #00bfff;
-        font-weight: 600;
-        background-color: #121212;
-        padding: 12px 20px;
-        border-bottom: 1px solid #333;
+    .premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 169, 206, 0.25);
     }
 
-    .modern-table td {
-        padding: 12px 20px;
-        background-color: #1e1e1e;
-        border-bottom: 1px solid #333;
-    }
-
-    .page-heading {
-        font-size: 2rem;
-        color: #fff;
-        background-color: #121212;
-        padding: 15px;
+    .premium-heading {
+        font-size: 2.4rem;
+        background: linear-gradient(90deg,rgb(16, 188, 3), #4F56FF);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
         text-align: center;
-        border-radius: 8px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        position: relative;
+    }
+    
+    .premium-heading:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg,rgb(0, 4, 5),rgb(24, 30, 228));
+        border-radius: 2px;
+    }
+
+    .premium-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 12px;
+    }
+
+    .premium-table th {
+        width: 250px;
+        color:rgb(55, 226, 7);
         font-weight: 700;
-        box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+        background-color: rgba(4, 0, 0, 0.1);
+        padding: 16px 24px;
+        border-radius: 10px 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
     }
 
-    .btn-secondary {
-        background-color: #00bfff;
-        color: #121212;
-        font-weight: 600;
-        border-radius: 8px;
-        padding: 10px 20px;
+    .premium-table td {
+        padding: 16px 24px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 0 10px 10px 0;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .premium-btn {
+        background: linear-gradient(135deg,rgb(209, 58, 85),rgb(143, 73, 15));
+        color:rgb(255, 255, 255);
+        font-weight: 700;
+        border-radius: 12px;
+        padding: 14px 32px;
         text-decoration: none;
-        transition: 0.3s;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 169, 206, 0.3);
+        display: inline-block;
     }
 
-    .btn-secondary:hover {
-        background-color: #008ecc;
-        color: #fff;
+    .premium-btn:hover {
+        background: linear-gradient(135deg, #4F56FF, #00A9CE);
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(0, 169, 206, 0.4);
+        color: #FFFFFF;
+        text-decoration: none;
+    }
+    
+    .quiz-info-badge {
+        background: rgba(0, 0, 0, 0.15);
+        color:rgb(255, 255, 255);
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+    
+    .detail-icon {
+        margin-right: 10px;
+        color:rgb(42, 112, 156);
+    }
+    
+    /* Add subtle animation */
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(0, 169, 206, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(0, 169, 206, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 169, 206, 0); }
+    }
+    
+    .premium-btn:focus {
+        animation: pulse 1.5s infinite;
     }
 </style>
 
-<div class="container">
-    <div class="card shadow-lg p-4 modern-card">
-        <div class="page-heading">Quiz Details</div>
+<div class="container mt-5">
+    <div class="premium-card">
+        <h1 class="premium-heading">Quiz Details</h1>
 
-        <table class="table table-borderless modern-table mt-4">
+        <table class="premium-table">
             <tbody>
-                <tr><th>Quiz ID</th><td>{{ quiz.id }}</td></tr>
-                <tr><th>Subject</th><td>{{ subject.name }}</td></tr>
-                <tr><th>Chapter</th><td>{{ chapter.name }}</td></tr>
-                <tr><th>Number of Questions</th><td>{{ quiz.questions|length }}</td></tr>
                 <tr>
-                    <th>Scheduled Date & Duration</th>
+                    <th><i class="fas fa-bookmark detail-icon"></i>Quiz Name</th>
+                    <td>{{ quiz.name }}</td>
+                </tr>
+                <tr>
+                    <th><i class="fas fa-fingerprint detail-icon"></i>Quiz ID</th>
+                    <td>#{{ quiz.id }}</td>
+                </tr>
+                <tr>
+                    <th><i class="fas fa-book detail-icon"></i>Subject</th>
+                    <td>{{ subject.name }}</td>
+                </tr>
+                <tr>
+                    <th><i class="fas fa-layer-group detail-icon"></i>Chapter</th>
+                    <td>{{ chapter.name }}</td>
+                </tr>
+                <tr>
+                    <th><i class="fas fa-question-circle detail-icon"></i>Questions</th>
                     <td>
-                        {{ quiz.date_of_quiz.strftime('%Y-%m-%d') if quiz.date_of_quiz else 'Not Scheduled' }}
-                        | {{ quiz.time_duration }} mins
+                        {{ quiz.questions|length }}
+                        <span class="quiz-info-badge">{{ quiz.questions|length }} total questions</span>
                     </td>
+                </tr>
+                <tr>
+                    <th><i class="fas fa-calendar-alt detail-icon"></i>Scheduled Date</th>
+                    <td>
+                        {% if quiz.date_of_quiz %}
+                            {{ quiz.date_of_quiz.strftime('%B %d, %Y') }}
+                        {% else %}
+                            <span class="text-muted">Not Scheduled</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fas fa-clock detail-icon"></i>Duration</th>
+                    <td>
+                        {{ quiz.time_duration // 60 }} mins
+                        <span class="quiz-info-badge">{{ quiz.time_duration // 60 }} mins</span>
+                    </td>
+
                 </tr>
             </tbody>
         </table>
 
-        <div class="mt-4 text-center">
-            <a href="{{ url_for('users.dashboard') }}" class="btn btn-secondary">Close</a>
+        <div class="mt-5 text-center">
+            <a href="{{ url_for('users.dashboard') }}" class="premium-btn">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
         </div>
     </div>
 </div>

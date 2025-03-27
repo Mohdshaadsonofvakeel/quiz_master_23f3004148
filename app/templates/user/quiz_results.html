@@ -1,21 +1,55 @@
 {% extends "layout.html" %}
 {% block title %}Quiz Results{% endblock %}
 {% block content %}
-<h1 class="page-title">Quiz Results</h1>
+<h1 class="page-title text-center">Quiz Results</h1>
 
-
-<div class="card">
-    <div class="card-body">
-        <div class="detail-item">
-            <span class="detail-key">Quiz Name:</span>
-            <span class="detail-value">{{ quiz.name }}</span>
+<div class="card result-card shadow-lg">
+    <div class="card-body text-center">
+        <h2 class="quiz-name">{{ quiz.name }}</h2>
+        
+        <!-- Animated Score Progress Circle -->
+        <div class="score-container">
+            <div class="progress-circle" data-score="{{ score.total_scored }}" data-total="{{ quiz.questions|length }}">
+                <span class="score-text">{{ score.total_scored }} / {{ quiz.questions|length }}</span>
+            </div>
+        </div>
+        
+        <!-- Performance Badge -->
+        <div class="performance-badge">
+            {% if score.total_scored / quiz.questions|length >= 0.8 %}
+                <span class="badge gold">🏆 Excellent!</span>
+            {% elif score.total_scored / quiz.questions|length >= 0.5 %}
+                <span class="badge silver">⭐ Good Effort!</span>
+            {% else %}
+                <span class="badge bronze">📚 Keep Practicing!</span>
+            {% endif %}
         </div>
 
-        <div class="detail-item">
-            <span class="detail-key">Your Score:</span>
-            <span class="detail-value">{{ score.total_scored }} / {{ quiz.questions|length }}</span>
+        <!-- Action Buttons -->
+        <div class="result-actions">
+            <a href="{{ url_for('users.attempt_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Retry Quiz</a>
+            <a href="{{ url_for('users.leaderboard', quiz_id=quiz.id) }}" class="btn btn-secondary">View Leaderboard</a>
         </div>
     </div>
 </div>
 
+<!-- Custom Styles and Scripts for Animations -->
+<style>
+    .result-card { background: #222; color: #fff; border-radius: 12px; padding: 20px; }
+    .quiz-name { font-size: 1.8rem; margin-bottom: 10px; }
+    .score-container { margin: 20px auto; display: flex; justify-content: center; }
+    .progress-circle {
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        background: conic-gradient(#4CAF50 {{ (score.total_scored / quiz.questions|length) * 360 }}deg, #444 0deg);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; font-weight: bold;
+    }
+    .performance-badge { margin: 15px; font-size: 1.2rem; }
+    .badge { padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+    .gold { background: #FFD700; color: #222; }
+    .silver { background: #C0C0C0; color: #222; }
+    .bronze { background: #CD7F32; color: #fff; }
+    .result-actions { margin-top: 20px; }
+</style>
 {% endblock %}

@@ -7,6 +7,9 @@ class Quiz(db.Model):
     date_of_quiz = db.Column(db.DateTime)
     time_duration = db.Column(db.Integer, default=0)
     chapter_id = db.Column(db.Integer, db.ForeignKey('chapter.id'), nullable=False)
-
     questions = db.relationship('Question', backref='quiz', lazy=True, cascade="all, delete-orphan")
     scores = db.relationship('Score', backref='quiz', lazy=True, cascade="all, delete-orphan")
+
+    @property
+    def questions_count(self):
+        return len(self.questions)  # Returns the count of related questions

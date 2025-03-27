@@ -1,69 +1,158 @@
 {% extends "layout.html" %}
 {% block title %}Select Quiz{% endblock %}
 {% block content %}
-<h1 class="page-title">Select Quiz</h1>
 
-<div class="card">
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="subject_id" class="form-label">Select Subject</label>
-                <select id="subject_id" name="subject_id" class="form-control">
-                    <option value="">--Select Subject--</option>
-                    {% for subject in subjects %}
-                    <option value="{{ subject.id }}">{{ subject.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="chapter_id" class="form-label">Select Chapter</label>
-                <select id="chapter_id" name="chapter_id" class="form-control">
-                    <option value="">--Select Chapter--</option>
-                    {% for chapter in chapters %}
-                    <option value="{{ chapter.id }}" data-subject-id="{{ chapter.subject_id }}">{{ chapter.name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Filter Quizzes</button>
-        </form>
+<style>
+    body {
+        background: linear-gradient(135deg,rgb(3, 0, 0),rgb(101, 7, 7));
+        color: #e0e0e0;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2rem;
+        color:rgb(84, 13, 226);
+        text-shadow: 0 0 15px rgba(118, 83, 2, 0.8);
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .modern-card {
+        background: rgba(116, 3, 3, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: 0 0 35px rgba(0, 170, 255, 0.25);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+
+    .form-group label {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 1rem;
+        background: #2a2a2a;
+        color: #e0e0e0;
+    }
+
+    .btn-glow {
+        background: linear-gradient(45deg, #00e6ff, #0077b6);
+        color: #000;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 12px 24px;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 15px rgba(0, 230, 255, 0.4);
+    }
+
+    .btn-glow:hover {
+        background: linear-gradient(45deg, #0077b6, #003f66);
+        color: #fff;
+        transform: scale(1.08);
+        box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .modern-table th {
+        color:rgb(0, 0, 0);
+        font-weight: 700;
+        background: rgba(0, 55, 255, 0.9);
+        padding: 14px 24px;
+        border-radius: 8px;
+        text-transform: uppercase;
+    }
+
+    .modern-table td {
+        padding: 14px 24px;
+        background: rgba(19, 133, 155, 0.9);
+        border-radius: 8px;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .modern-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: scale(1.02);
+        transition: 0.3s ease-in-out;
+    }
+</style>
+
+<h1 class="page-title">✨ Select Quiz ✨</h1>
+
+<div class="container">
+    <div class="card shadow-lg modern-card">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-group">
+                    <label for="subject_id" class="form-label">Select Subject</label>
+                    <select id="subject_id" name="subject_id" class="form-control">
+                        <option value="">--Select Subject--</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="chapter_id" class="form-label">Select Chapter</label>
+                    <select id="chapter_id" name="chapter_id" class="form-control">
+                        <option value="">--Select Chapter--</option>
+                        {% for chapter in chapters %}
+                        <option value="{{ chapter.id }}" data-subject-id="{{ chapter.subject_id }}">{{ chapter.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-glow">🔍 Filter Quizzes</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-
-<div class="table-container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Date of Quiz</th>
-                <th>Time Duration (In Minutes)</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for quiz in quizzes %}
-            <tr>
-                <td>{{ quiz.id }}</td>
-                <td>{{ quiz.name }}</td>
-                <td>{{ quiz.date_of_quiz.strftime("%Y-%m-%d") }}</td>
-                <td>{{ quiz.time_duration / 60 }}</td>
-
-                <td class="action-buttons">
-                    <a href="{{ url_for('users.attempt_quiz', quiz_id=quiz.id) }}"
-                        class="btn btn-edit btn-sm">Attempt</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="container">
+    <div class="table-container">
+        <table class="table modern-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Date of Quiz</th>
+                    <th>Time Duration (Minutes)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                <tr>
+                    <td>{{ quiz.id }}</td>
+                    <td>{{ quiz.name }}</td>
+                    <td>{{ quiz.date_of_quiz.strftime("%Y-%m-%d") }}</td>
+                    <td>{{ quiz.time_duration // 60 }}</td>
+                    <td>
+                        <a href="{{ url_for('users.attempt_quiz', quiz_id=quiz.id) }}" class="btn btn-glow btn-sm">🚀 Attempt</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
     document.getElementById('subject_id').addEventListener('change', function () {
-        subjectId = this.value;
-        chapters = document.querySelectorAll('#chapter_id option')
+        let subjectId = this.value;
+        let chapters = document.querySelectorAll('#chapter_id option');
 
         chapters.forEach(option => {
             if (option.dataset.subjectId == subjectId || option.value == "") {
@@ -72,6 +161,7 @@
                 option.style.display = "none";
             }
         });
-    })
+    });
 </script>
+
 {% endblock %}

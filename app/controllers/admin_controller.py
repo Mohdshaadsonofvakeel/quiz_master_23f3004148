@@ -10,6 +10,8 @@ from app.models.score import Score
 from app.models.subject import Subject
 from app.models.user import User
 from sqlalchemy.orm import joinedload
+from flask import request, render_template, redirect, url_for, flash
+from flask import render_template, request
 
 
 admin_bp = Blueprint('admin', __name__)
@@ -86,7 +88,7 @@ def admin_dashboard():
     # ✅ Fix Recent Quiz Attempts
     recent_attempts = Score.query.options(
         joinedload(Score.user), joinedload(Score.quiz)
-    ).order_by(Score.timestamp.desc()).limit(5).all()
+    ).order_by(Score.timestamp.desc()).limit(10).all()
 
     recent_attempts_data = [{
         "user": s.user.fullname if s.user else "Unknown",
@@ -96,7 +98,7 @@ def admin_dashboard():
     } for s in recent_attempts]
 
     # ✅ Fix Recent Users
-    recent_users = User.query.filter(User.is_admin == False).order_by(User.id.desc()).limit(5).all()
+    recent_users = User.query.filter(User.is_admin == False).order_by(User.id.desc()).all()
 
     recent_users_data = [{
         "fullname": u.fullname if u.fullname else "Unknown",
@@ -337,3 +339,33 @@ def delete_question(question_id):
     db.session.commit()
     flash("Question deleted successfully!", category="success")
     return redirect(url_for("admin.manage_quiz_questions", quiz_id=question.quiz_id))
+
+
+@admin_bp.route('/search', defaults={'question_id': None})
+@admin_bp.route('/search/<int:question_id>')
+@admin_login_required
+def search_results(question_id):
+    query = request.args.get("q", "").strip().lower()
+    
+    if not query:
+        flash("Enter a search term.", "warning")
+        return redirect(url_for("admin.admin_dashboard"))
+
+    # Search logic: Example with SQLAlchemy filters
+    users = User.query.filter(User.fullname.ilike(f"%{query}%")).all()
+    subjects = Subject.query.filter(Subject.name.ilike(f"%{query}%")).all()
+    quizzes = Quiz.query.filter(Quiz.name.ilike(f"%{query}%")).all()
+    chapters = Chapter.query.filter(Chapter.name.ilike(f"%{query}%")).all()  # Add chapter search
+    questions = Question.query.filter(Question.question_statement.ilike(f"%{query}%")).all()
+    recent_attempts = Score.query.join(User).filter(User.fullname.ilike(f"%{query}%")).all()
+    
+    return render_template(
+        "admin/search_results.html",
+        query=query,
+        users=users,
+        subjects=subjects,
+        quizzes=quizzes,
+        chapters=chapters,
+        questions=questions,
+        recent_attempts=recent_attempts,  # Pass filtered quiz attempts
+    )

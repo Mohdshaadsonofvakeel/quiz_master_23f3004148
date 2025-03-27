@@ -61,14 +61,23 @@
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}"><i class="fas fa-tachometer-alt"></i> Summary</a></li>
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="{{ url_for('users.dashboard') }}"><i class="fas fa-home"></i> Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.leaderboard') }}"><i class="fas fa-chart-bar"></i> Leaderboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.select_quiz') }}"><i class="fas fa-play-circle"></i> Play Quiz</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.score_details') }}"><i class="fas fa-chart-line"></i> Scores</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.leaderboard') }}"><i class="fas fa-chart-bar"></i> Summary</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('users.select_quiz') }}"><i class="fas fa-play-circle"></i> Search & Attempt</a></li>
                         {% endif %}
                     {% endif %}
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
+                        <!-- SEARCH BAR FOR ADMIN AND USERS -->
+                        <form action="{% if current_user.is_admin %}{{ url_for('admin.search_results', question_id=default_id | default(0)) }}{% else %}{{ url_for('users.search_results') }}{% endif %}" method="GET" class="d-flex">
+
+
+                            <input class="form-control me-2" type="search" name="q" placeholder="{% if current_user.is_admin %}Search, {{ current_user.fullname }} {% else %}Search, {{ current_user.fullname }} {% endif %}" aria-label="Search">
+                            <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                
                         <li class="nav-item"><span class="nav-link">Hi, {{ current_user.fullname }}</span></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                     {% else %}
@@ -76,6 +85,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
                     {% endif %}
                 </ul>
+                
             </div>
         </div>
     </nav>

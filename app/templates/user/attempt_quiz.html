@@ -35,10 +35,6 @@
         transition: 0.3s;
     }
 
-    .quiz-card:hover {
-        box-shadow: 0 0 30px rgba(0, 170, 255, 0.3);
-    }
-
     .question-number {
         font-size: 1.3rem;
         color: #00aaff;
@@ -67,11 +63,12 @@
         font-weight: 600;
     }
 
-    .quiz-options input {
-        margin-right: 1rem;
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
     }
 
-    .submit-btn {
+    .nav-btn, .submit-btn {
         background-color: #00aaff;
         color: #121212;
         padding: 1rem 2rem;
@@ -83,7 +80,7 @@
         transition: 0.3s;
     }
 
-    .submit-btn:hover {
+    .nav-btn:hover, .submit-btn:hover {
         background-color: #008ecc;
         color: #fff;
     }
@@ -92,7 +89,6 @@
         .quiz-card {
             padding: 1rem;
         }
-
         .question-statement {
             font-size: 1.4rem;
         }
@@ -107,8 +103,8 @@
 
 <form id="quizForm" method="POST">
     {% for question in questions %}
-    <div class="quiz-card">
-        <div class="question-number">Question {{ loop.index }}</div>
+    <div class="quiz-card {% if loop.first %}d-block{% else %}d-none{% endif %}" id="question_{{ loop.index }}">
+        <div class="question-number">Question {{ loop.index }} / {{ totalQuestions }}</div>
         <div class="question-statement">{{ question.question_statement }}</div>
         <div class="quiz-options">
             {% for option in [question.option1, question.option2, question.option3, question.option4] %}
@@ -118,17 +114,25 @@
             </label>
             {% endfor %}
         </div>
+        <div class="btn-container">
+            {% if not loop.first %}
+            <button type="button" class="nav-btn prev-btn" data-index="{{ loop.index }}">Previous</button>
+            {% endif %}
+            {% if not loop.last %}
+            <button type="button" class="nav-btn next-btn" data-index="{{ loop.index }}">Save & Next</button>
+            {% else %}
+            <button type="submit" class="submit-btn">Submit Quiz</button>
+            {% endif %}
+        </div>
     </div>
     {% endfor %}
-    <div class="text-center">
-        <button type="submit" class="submit-btn">Submit Quiz</button>
-    </div>
 </form>
 
+<!-- Timer Script (Only JavaScript Allowed) -->
 <script>
     const quizDuration = {{ quiz.time_duration }};
     if (quizDuration > 0) {
-        let timeLeft = quizDuration * 60;  // Convert minutes to seconds
+        let timeLeft = quizDuration;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -146,6 +150,24 @@
 
         const timeInterval = setInterval(updateTimer, 1000);
     }
+
+    // Smooth Question Navigation
+    document.querySelectorAll('.next-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const currentIndex = parseInt(this.getAttribute('data-index'));
+            document.getElementById(`question_${currentIndex}`).classList.add('d-none');
+            document.getElementById(`question_${currentIndex + 1}`).classList.remove('d-none');
+        });
+    });
+
+    document.querySelectorAll('.prev-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const currentIndex = parseInt(this.getAttribute('data-index'));
+            document.getElementById(`question_${currentIndex}`).classList.add('d-none');
+            document.getElementById(`question_${currentIndex - 1}`).classList.remove('d-none');
+        });
+    });
+
 </script>
 
 {% endblock %}

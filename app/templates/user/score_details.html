@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+{% block title %}Score Details{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        background: linear-gradient(135deg,rgb(255, 255, 255),rgb(0, 0, 0));
+        color:rgb(216, 0, 0);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .modern-card {
+        background: rgba(159, 2, 2, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        color:rgb(176, 0, 0);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.25);
+        padding: 25px;
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .modern-table th {
+        color:rgb(255, 255, 255);
+        font-weight: 700;
+        background: rgba(0, 0, 0, 0.9);
+        padding: 14px 24px;
+        border-radius: 8px;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(52, 223, 0, 0.8);
+    }
+
+    .modern-table td {
+        padding: 14px 24px;
+        background: rgba(1, 142, 76, 0.9);
+        border-radius: 8px;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .modern-table tbody tr:hover {
+        background: rgba(11, 0, 0, 0.9);
+        transform: scale(1.02);
+        transition: 0.3s ease-in-out;
+    }
+
+    .page-heading {
+        font-size: 2.2rem;
+        color: #00e6ff;
+        text-align: center;
+        border-radius: 10px;
+        font-weight: 700;
+        text-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .btn-glow {
+        background: linear-gradient(45deg, #00e6ff, #0077b6);
+        color: #000;
+        font-weight: 700;
+        border-radius: 12px;
+        padding: 12px 24px;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 15px rgba(0, 230, 255, 0.4);
+    }
+
+    .btn-glow:hover {
+        background: linear-gradient(45deg, #0077b6, #003f66);
+        color: #fff;
+        transform: scale(1.08);
+        box-shadow: 0 0 20px rgba(0, 191, 255, 0.6);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-lg modern-card">
+        <div class="page-heading">✨ Score Details ✨</div>
+        
+        <table class="table modern-table mt-4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Quiz Name</th>
+                    <th>Questions</th>
+                    <th>Date</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in user_scores %}
+                <tr>
+                    <td>{{ score.quiz_id }}</td>
+                    <td>{{ score.name }}</td>
+                    <td>{{ score.num_questions }}</td>
+                    <td>{{ score.date }}</td>
+                    <td><strong>{{ score.user_score }}/{{ score.num_questions }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('users.dashboard') }}" class="btn btn-glow">⬅ Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

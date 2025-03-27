@@ -44,7 +44,8 @@ def login():
                 return redirect(url_for('users.dashboard'))
         else:
             flash("Invalid Username or Password!", category="error")
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, default_id=0)  # Assigning a default value
+
 
 @auth_bp.route("/logout")
 @login_required
