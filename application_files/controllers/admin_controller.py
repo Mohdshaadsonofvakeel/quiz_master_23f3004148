@@ -1,14 +1,14 @@
 from functools import wraps
 from flask import Blueprint, render_template, redirect, flash, url_for
-from app import db
-from app.forms import SubjectForm, ChapterForm, QuizForm, QuestionForm
+from application_files import db
+from application_files.forms import SubjectForm, ChapterForm, QuizForm, QuestionForm
 from flask_login import current_user, login_required
-from app.models.chapter import Chapter
-from app.models.question import Question
-from app.models.quiz import Quiz
-from app.models.score import Score
-from app.models.subject import Subject
-from app.models.user import User
+from application_files.models.chapter import Chapter
+from application_files.models.question import Question
+from application_files.models.quiz import Quiz
+from application_files.models.score import Score
+from application_files.models.subject import Subject
+from application_files.models.user import User
 from sqlalchemy.orm import joinedload
 from flask import request, render_template, redirect, url_for, flash
 from flask import render_template, request

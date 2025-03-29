@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, redirect, flash, url_for, request
-from app import db
+from application_files import db
 from flask_login import current_user, login_required
 from random import shuffle
-from app.models.chapter import Chapter
-from app.models.quiz import Quiz
-from app.models.score import Score
-from app.models.subject import Subject
-from app.models.user import User
+from application_files.models.chapter import Chapter
+from application_files.models.quiz import Quiz
+from application_files.models.score import Score
+from application_files.models.subject import Subject
+from application_files.models.user import User
 from datetime import datetime
 
 

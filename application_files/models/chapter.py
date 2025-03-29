@@ -1,4 +1,4 @@
-from app import db
+from application_files import db
 
 class Chapter(db.Model):
     id = db.Column(db.Integer, primary_key=True)

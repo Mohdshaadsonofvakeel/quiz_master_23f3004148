@@ -1,4 +1,4 @@
-from app import db
+from application_files import db
 
 
 class Score(db.Model):

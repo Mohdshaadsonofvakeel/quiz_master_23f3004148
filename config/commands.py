@@ -1,7 +1,7 @@
 import os
-from app import db
+from application_files import db
 from config.seed import seed_database
-from app.models.user import User
+from application_files.models.user import User
 
 def create_admin():
     admin = User.query.filter_by(username=os.getenv('ADMIN_USERNAME')).first()

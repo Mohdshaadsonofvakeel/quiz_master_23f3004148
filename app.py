@@ -1,11 +1,11 @@
-from app import db, create_app, login_manager
+from application_files import db, create_app, login_manager
 from flask import render_template
 from config.commands import register_commands
-from app.models.user import User
+from application_files.models.user import User
 # Blueprints
-from app.controllers.auth_controller import auth_bp
-from app.controllers.users_controller import users_bp
-from app.controllers.admin_controller import admin_bp
+from application_files.controllers.auth_controller import auth_bp
+from application_files.controllers.users_controller import users_bp
+from application_files.controllers.admin_controller import admin_bp
 
 app = create_app()
 
